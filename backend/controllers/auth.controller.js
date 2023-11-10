@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
    const { username, password } = req.body;
 
    const salt = await bcrypt.genSalt(10);
@@ -16,8 +16,7 @@ const signup = async (req, res) => {
       await user.save();
       res.status(201).send({ message: 'User created' });
    } catch (error) {
-      console.log(error);
-      res.status(500).send('Internal server error');
+      next(error);
    }
 };
 

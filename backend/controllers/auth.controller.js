@@ -39,7 +39,7 @@ const signin = async (req, res, next) => {
 
       const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
       const { password: pwd, ...user } = validUser._doc;
-      res.cookie('access_token', token, { httpOnly: true }).status(200).json(user);
+      res.cookie('access_token', token, { httpOnly: true }).status(200).send({ success: true, user });
    } catch (error) {
       next(error);
    }

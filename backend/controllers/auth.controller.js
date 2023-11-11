@@ -32,7 +32,7 @@ const signin = async (req, res, next) => {
 
    try {
       const validUser = await User.findOne({ username });
-      if (!validUser) return next(errorHandler(401, 'User not found'));
+      if (!validUser) return next(errorHandler(401, 'Username or password is incorrect'));
 
       const validPassword = bcrypt.compareSync(password, validUser.password);
       if (!validPassword) return next(errorHandler(401, 'Username or password is incorrect'));

@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupStart, signupSuccess, signupFailure } from '../redux/user/userSlice';
 import { Link } from 'react-router-dom';
 
 const SignUp = () => {
    const [formData, setFormData] = useState({});
-   const [error, setError] = useState('');
-   const [loading, setLoading] = useState(false);
+   const { loading, error } = useSelector((state) => state.user);
+   const dispatch = useDispatch();
 
    const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,12 +16,13 @@ const SignUp = () => {
       e.preventDefault();
 
       if (formData.password !== formData.confirmPassword) {
-         alert('Passwords do not match');
+         dispatch(signupFailure('Passwords do not match.'));
          return;
       }
 
       try {
-         setLoading(true);
+         dispatch(signupStart());
+
          const response = await fetch('/api/auth/signup', {
             method: 'POST',
             headers: {
@@ -28,18 +31,16 @@ const SignUp = () => {
             body: JSON.stringify(formData),
          });
          const data = await response.json();
-         setLoading(false);
 
          if (!data.success) {
-            setError(data.message);
+            dispatch(signupFailure(data.message));
             return;
          }
 
-         setError('');
+         dispatch(signupSuccess(data.user));
       } catch (err) {
          console.log(err);
-         setLoading(false);
-         setError(err.message);
+         dispatch(signupFailure('Something went wrong. Please try again later.'));
       }
    };
 

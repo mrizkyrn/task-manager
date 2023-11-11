@@ -12,6 +12,7 @@ const userSlice = createSlice({
    reducers: {
       signupStart(state) {
          state.loading = true;
+         state.error = null;
       },
       signupSuccess(state) {
          state.loading = false;
@@ -22,11 +23,11 @@ const userSlice = createSlice({
       },
       signinStart(state) {
          state.loading = true;
+         state.error = null;
       },
       signinSuccess(state, action) {
          state.loading = false;
          state.currentUser = action.payload;
-         state.error = null;
       },
       signinFailure(state, action) {
          state.loading = false;

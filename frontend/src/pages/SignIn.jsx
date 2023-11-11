@@ -26,15 +26,16 @@ const SignIn = () => {
             },
             body: JSON.stringify(formData),
          });
+
          const data = await response.json();
 
          if (!data.success) {
             dispatch(signinFailure(data.message));
             return;
          }
-         
+
          dispatch(signinSuccess(data.user));
-         
+
          navigate('/');
       } catch (err) {
          console.log(err);

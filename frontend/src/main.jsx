@@ -8,11 +8,17 @@ import Dashboard from './pages/Dashboard.jsx';
 import store, { persistor } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import Layout from './component/Layout.jsx';
 
 const routes = createBrowserRouter([
    {
-      path: '/',
-      element: <Dashboard />,
+      element: <Layout />,
+      children: [
+         {
+            path: '/',
+            element: <Dashboard />,
+         },
+      ],
    },
    {
       path: '/signup',

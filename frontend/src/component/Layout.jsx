@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
-import Header from './Header';
+import Sidebar from './Sidebar';
 
 const Layout = () => {
    const { currentUser } = useSelector((state) => state.user);
@@ -14,8 +14,8 @@ const Layout = () => {
    }, [currentUser, navigate]);
 
    return (
-      <div>
-         <Header />
+      <div className='flex h-screen overflow-hidden bg-semiDark'>
+         <Sidebar />
          <Outlet />
       </div>
    );

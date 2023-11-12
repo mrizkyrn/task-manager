@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
@@ -9,6 +8,8 @@ import store, { persistor } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import Layout from './component/Layout.jsx';
+import Tasks from './pages/Tasks.jsx';
+import NotFound from './pages/NotFound.jsx';
 
 const routes = createBrowserRouter([
    {
@@ -17,6 +18,10 @@ const routes = createBrowserRouter([
          {
             path: '/',
             element: <Dashboard />,
+         },
+         {
+            path: '/tasks',
+            element: <Tasks />,
          },
       ],
    },
@@ -28,14 +33,16 @@ const routes = createBrowserRouter([
       path: '/signin',
       element: <SignIn />,
    },
+   {
+      path: '*',
+      element: <NotFound />,
+   },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-   <React.StrictMode>
-      <Provider store={store}>
-         <PersistGate persistor={persistor} loading={null}>
-            <RouterProvider router={routes} />
-         </PersistGate>
-      </Provider>
-   </React.StrictMode>
+   <Provider store={store}>
+      <PersistGate persistor={persistor} loading={null}>
+         <RouterProvider router={routes} />
+      </PersistGate>
+   </Provider>
 );

@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './index.css';
 import SignUp from './pages/SignUp.jsx';
 import SignIn from './pages/SignIn.jsx';
-import Dashboard from './pages/Dashboard.jsx';
+import Home from './pages/Home.jsx';
 import store, { persistor } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -17,7 +17,7 @@ const routes = createBrowserRouter([
       children: [
          {
             path: '/',
-            element: <Dashboard />,
+            element: <Home />,
          },
          {
             path: '/tasks',

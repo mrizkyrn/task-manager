@@ -1,11 +1,11 @@
 import Container from "../component/Container";
 
-const Dashboard = () => {
+const Home = () => {
    return (
       <Container>
-         <div>Dashboard</div>
+         <div>Home</div>
       </Container>
    );
 };
 
-export default Dashboard;
+export default Home;

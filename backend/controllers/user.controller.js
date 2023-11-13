@@ -1,7 +1,3 @@
-const test = (req, res) => {
-   res.send('Test controller');
-};
+const User = require('../models/user.model.js');
+const errorHandler = require('../utils/errorHandler');
 
-module.exports = {
-   test,
-};

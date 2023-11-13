@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/user.model');
-const errorHandler = require('../utils/errorHandler');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user.model.js');
+const errorHandler = require('../utils/errorHandler.js');
 
 const signup = async (req, res, next) => {
    const { username, password } = req.body;

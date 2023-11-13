@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signout } from '../redux/user/userSlice';
 import { NavLink } from 'react-router-dom';
-import { ArrowIcon, HomeIcon, LogOutIcon, TaskIcon } from './Icons';
+import { ArrowIcon, GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
 
 const SidebarItem = () => [
    {
@@ -15,16 +15,16 @@ const SidebarItem = () => [
       icon: <TaskIcon className="w-5 h-5" />,
       path: '/tasks',
    },
-   // {
-   //    name: 'Groups',
-   //    icon: <GroupIcon className="w-4 h-4 mr-3" />,
-   //    path: '/groups',
-   // },
-   // {
-   //    name: 'Settings',
-   //    icon: <SettingsIcon className="w-4 h-4 mr-3" />,
-   //    path: '/settings',
-   // },
+   {
+      name: 'Group Tasks',
+      icon: <GroupTasksIcon className="w-5 h-5" />,
+      path: '/group-tasks',
+   },
+   {
+      name: 'Projects',
+      icon: <ProjectIcon className="w-5 h-5" />,
+      path: '/projects',
+   },
 ];
 
 const Sidebar = () => {

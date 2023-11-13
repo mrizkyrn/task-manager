@@ -1,7 +1,11 @@
-const Tasks = () => {
-  return (
-    <div>Tasks</div>
-  )
-}
+import Container from '../component/Container';
 
-export default Tasks
+const Tasks = () => {
+   return (
+      <Container>
+         <div>Tasks</div>
+      </Container>
+   );
+};
+
+export default Tasks;

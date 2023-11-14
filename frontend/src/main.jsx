@@ -1,17 +1,18 @@
+import './index.css';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import './index.css';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
+import store, { persistor } from './redux/store';
 import SignUp from './pages/SignUp.jsx';
 import SignIn from './pages/SignIn.jsx';
-import Home from './pages/Home.jsx';
-import store, { persistor } from './redux/store';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import Layout from './component/Layout.jsx';
-import Tasks, { loader as tasksLoader } from './pages/Tasks.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Layout from './component/Layout.jsx';
+import Home from './pages/Home.jsx';
+import Tasks, { loader as tasksLoader } from './pages/Tasks.jsx';
+import CreateTask from './pages/CreateTask.jsx';
 
-const routes = createBrowserRouter([
+const router = createBrowserRouter([
    {
       element: <Layout />,
       children: [
@@ -24,6 +25,10 @@ const routes = createBrowserRouter([
             element: <Tasks />,
             loader: tasksLoader,
          },
+         {
+            path: '/tasks/create',
+            element: <CreateTask />,
+         }
       ],
    },
    {
@@ -43,7 +48,7 @@ const routes = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
    <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
-         <RouterProvider router={routes} />
+         <RouterProvider router={router} />
       </PersistGate>
    </Provider>
 );

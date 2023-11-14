@@ -1,5 +1,5 @@
 import Container from '../component/Container';
-import { useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import TaskCard from '../component/TaskCard';
 import { AddIcon } from '../component/Icons';
 
@@ -25,12 +25,12 @@ const Tasks = () => {
       <Container>
          <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-200">My Tasks</h1>
-            <button className="bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded-md text-white font-semibold">
+            <Link to={'create'} className="bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded-md text-white font-semibold">
                <span>
                   <AddIcon className="w-6 h-6 inline-block mr-2" />
                </span>
                Create Task
-            </button>
+            </Link>
          </div>
 
          <div className="flex flex-col gap-7 mt-10">

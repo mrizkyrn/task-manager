@@ -16,7 +16,7 @@ const Layout = () => {
    return (
       <>
          <Navbar />
-         <div className="w-full sm:pl-20 lg:pl-64 py-10 min-h-screen bg-semiDark">
+         <div className="font-poppins w-full pb-28 sm:pb-10 pt-10 sm:pl-20 lg:pl-64 min-h-screen bg-semiDark">
             <Outlet />
          </div>
       </>

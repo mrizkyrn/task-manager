@@ -13,6 +13,10 @@ export default {
         primary: '#f3c614',
         secondary: '#353535',
       },
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
     },
     container: {
       center: true,

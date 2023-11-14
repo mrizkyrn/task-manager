@@ -34,12 +34,12 @@ const taskSchema = new mongoose.Schema(
 const Task = mongoose.model('Task', taskSchema);
 
 // const ex = {
-//    "title": "Task 1",
-//    "description": "Description 1",
-//    "dueDate": "2021-08-01",
-//    "completed": false,
-//    "priority": "low",
-//    "user": "60f7b9b0d4a7f4c9c0f9f2b5"
+   // "title": "example task",
+   // "description": "lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptates.",
+   // "dueDate": "2021-09-30",
+   // "completed": false,
+   // "priority": "medium",
+   // "users": ["6142c5d0d4e5b2a7f5d1c9d0"]
 // }
 
 module.exports = Task;

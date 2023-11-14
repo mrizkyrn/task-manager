@@ -8,7 +8,7 @@ import store, { persistor } from './redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import Layout from './component/Layout.jsx';
-import Tasks from './pages/Tasks.jsx';
+import Tasks, { loader as tasksLoader } from './pages/Tasks.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 const routes = createBrowserRouter([
@@ -22,6 +22,7 @@ const routes = createBrowserRouter([
          {
             path: '/tasks',
             element: <Tasks />,
+            loader: tasksLoader,
          },
       ],
    },

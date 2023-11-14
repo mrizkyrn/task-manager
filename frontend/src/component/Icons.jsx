@@ -87,3 +87,31 @@ export const GroupTasksIcon = ({ className = '', ...props }) => (
       <path d="M14.066 0H11v5a2 2 0 0 1-2 2H4v7a1.97 1.97 0 0 0 1.934 2h8.132A1.97 1.97 0 0 0 16 14V2a1.97 1.97 0 0 0-1.934-2Z" />
    </svg>
 );
+
+export const KebabMenuIcon = ({ className = '', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      className={`${className}`}
+      viewBox="0 0 24 24"
+      {...props}
+   >
+      <circle cx={12} cy={5} r={2} />
+      <circle cx={12} cy={19} r={2} />
+      <circle cx={12} cy={12} r={2} />
+   </svg>
+);
+
+export const AddIcon = ({ className = '', ...props }) => (
+   <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      className={`${className}`}
+      viewBox="0 0 24 24"
+      {...props}
+   >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+   </svg>
+);

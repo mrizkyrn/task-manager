@@ -14,9 +14,11 @@ const Layout = () => {
    }, [currentUser, navigate]);
 
    return (
-      <div className='flex h-screen overflow-hidden bg-semiDark'>
+      <div className="flex h-screen overflow-hidden bg-semiDark">
          <Sidebar />
-         <Outlet />
+         <div className="flex flex-col flex-1 w-0 overflow-auto">
+            <Outlet />
+         </div>
       </div>
    );
 };

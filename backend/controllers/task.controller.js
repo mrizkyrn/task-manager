@@ -12,16 +12,18 @@ const getTasks = async (req, res, next) => {
 };
 
 const createTask = async (req, res, next) => {
-   const { title, description, dueDate, completed, priority } = req.body;
-   const { id } = req.body;
-
+   const { title, description, notes, priority, dueDate, dueTime } = req.body;
+   const { id } = req.user;
+   
    try {
       const task = new Task({
          title,
          description,
-         dueDate,
-         completed,
+         notes,
          priority,
+         dueDate,
+         dueTime,
+         completed: false,
          users: [id],
       });
 

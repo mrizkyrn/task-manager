@@ -4,7 +4,7 @@ const verifyToken = require('../utils/userVerify.js');
 
 const router = express.Router();
 
-router.get('/',verifyToken, getTasks);
-router.post('/create', createTask);
+router.get('/', verifyToken, getTasks);
+router.post('/', verifyToken, createTask);
 
 module.exports = router;

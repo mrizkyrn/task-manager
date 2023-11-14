@@ -1,7 +1,47 @@
+import { useState } from 'react';
 import BackButton from '../component/BackButton';
 import Container from '../component/Container';
 
 const CreateTask = () => {
+   const [form, setForm] = useState({
+      title: '',
+      description: '',
+      notes: '',
+      priority: 'medium',
+      dueDate: '',
+      dueTime: '',
+   });
+
+   const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      if (!form.title) return;
+
+      try {
+         const res = await fetch('http://localhost:3000/api/tasks', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(form),
+         });
+         const data = await res.json();
+         console.log(data);
+      } catch (err) {
+         console.log(err);
+      }
+
+      setForm({
+         title: '',
+         description: '',
+         notes: '',
+         priority: 'medium',
+         dueDate: '',
+         dueTime: '',
+      });
+   };
+
    return (
       <Container>
          <div>
@@ -9,11 +49,11 @@ const CreateTask = () => {
             <h1 className="inline text-3xl font-semibold text-gray-200 ml-2">Create Task</h1>
          </div>
 
-         <form className="flex flex-col gap-5 mt-10">
+         <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit}>
             {/* Title */}
             <div className="flex flex-col gap-2">
                <label htmlFor="title" className="text-gray-200">
-                  Title
+                  Title *
                </label>
                <input
                   type="text"
@@ -21,6 +61,8 @@ const CreateTask = () => {
                   id="title"
                   placeholder="Enter title"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  value={form.title}
                />
             </div>
 
@@ -35,6 +77,8 @@ const CreateTask = () => {
                   placeholder="Enter description"
                   rows="4"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  value={form.description}
                />
             </div>
 
@@ -49,6 +93,8 @@ const CreateTask = () => {
                   placeholder="Enter notes"
                   rows="4"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  value={form.notes}
                />
             </div>
 
@@ -61,7 +107,8 @@ const CreateTask = () => {
                   name="priority"
                   id="priority"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
-                  defaultValue="medium"
+                  onChange={(e) => setForm({ ...form, priority: e.target.value })}
+                  value={form.priority}
                >
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
@@ -79,6 +126,8 @@ const CreateTask = () => {
                   name="dueDate"
                   id="dueDate"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
+                  onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+                  value={form.dueDate}
                />
             </div>
 
@@ -92,6 +141,8 @@ const CreateTask = () => {
                   name="dueTime"
                   id="dueTime"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
+                  onChange={(e) => setForm({ ...form, dueTime: e.target.value })}
+                  value={form.dueTime}
                />
             </div>
 

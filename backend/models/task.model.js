@@ -9,17 +9,23 @@ const taskSchema = new mongoose.Schema(
       description: {
          type: String,
       },
-      dueDate: {
-         type: Date,
-      },
-      completed: {
-         type: Boolean,
-         default: false,
+      notes: {
+         type: String,
       },
       priority: {
          type: String,
          enum: ['low', 'medium', 'high'],
          default: 'medium',
+      },
+      dueDate: {
+         type: Date,
+      },
+      dueTime: {
+         type: String,
+      },
+      completed: {
+         type: Boolean,
+         default: false,
       },
       users: [
          {

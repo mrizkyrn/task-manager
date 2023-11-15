@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { signout } from '../redux/user/userSlice';
+import { signoutStart, signoutSuccess, signoutFailure } from '../redux/user/userSlice';
 import { NavLink } from 'react-router-dom';
 import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
 import { useState } from 'react';
@@ -29,11 +29,23 @@ const NavbarItems = () => [
 
 const Navbar = () => {
    const dispatch = useDispatch();
-   const { currentUser } = useSelector((state) => state.user);
+   const { currentUser, loading } = useSelector((state) => state.user);
    const [isHover, setIsHover] = useState(false);
 
    const handleLogout = () => {
-      dispatch(signout());
+      try {
+         dispatch(signoutStart());
+         
+         fetch('/api/auth/signout', {
+            method: 'GET',
+         });
+
+         dispatch(signoutSuccess());
+      }
+      catch (err) {
+         console.log(err);
+         dispatch(signoutFailure('Something went wrong. Please try again later.'));
+      }
    };
 
    return (
@@ -74,7 +86,7 @@ const Navbar = () => {
                   <div>
                      <LogOutIcon className="w-5 h-5" />
                   </div>
-                  <span className="hidden lg:block">Logout</span>
+                  <span className="hidden lg:block">{loading ? 'Loading...' : 'Logout'}</span>
                </button>
             </div>
          </div>

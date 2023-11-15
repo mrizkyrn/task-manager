@@ -37,9 +37,17 @@ const signin = async (req, res, next) => {
       const validPassword = bcrypt.compareSync(password, validUser.password);
       if (!validPassword) return next(errorHandler(401, 'Username or password is incorrect'));
 
-      const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 24 * 365 });
       const { password: pwd, ...user } = validUser._doc;
       res.cookie('access_token', token, { httpOnly: true }).status(200).send({ success: true, user });
+   } catch (error) {
+      next(error);
+   }
+};
+
+const signout = async (req, res, next) => {
+   try {
+      res.clearCookie('access_token').status(200).send({ success: true, message: 'User signed out successfully' });
    } catch (error) {
       next(error);
    }
@@ -48,4 +56,5 @@ const signin = async (req, res, next) => {
 module.exports = {
    signup,
    signin,
+   signout,
 };

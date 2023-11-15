@@ -5,6 +5,11 @@
 @tailwind components;
 @tailwind utilities;
 
-input{
+/* color scheme ligt for date and time */
+input[type="date"] {
+   color-scheme: light dark;
+}
+
+input[type="time"] {
    color-scheme: light dark;
 }

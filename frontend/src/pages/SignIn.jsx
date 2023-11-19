@@ -58,6 +58,7 @@ const SignIn = () => {
                name="username"
                id="username"
                placeholder="Username"
+               autoComplete="off"
                onChange={handleChange}
             />
             <input

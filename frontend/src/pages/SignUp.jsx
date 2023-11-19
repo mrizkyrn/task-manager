@@ -2,11 +2,17 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupStart, signupSuccess, signupFailure } from '../redux/user/userSlice';
 import { Link } from 'react-router-dom';
+import CustomAlert from '../component/CustomAlert';
 
 const SignUp = () => {
-   const [formData, setFormData] = useState({});
+   const [formData, setFormData] = useState({
+      username: '',
+      password: '',
+      confirmPassword: '',
+   });
    const { loading, error } = useSelector((state) => state.user);
    const dispatch = useDispatch();
+   const [showAlert, setShowAlert] = useState(false);
 
    const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,10 +21,7 @@ const SignUp = () => {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      if (formData.password !== formData.confirmPassword) {
-         dispatch(signupFailure('Passwords do not match.'));
-         return;
-      }
+      if (!validateForm()) return;
 
       try {
          dispatch(signupStart());
@@ -37,12 +40,67 @@ const SignUp = () => {
             return;
          }
 
-         dispatch(signupSuccess(data.user));
+         onSignupSuccess();
+         
       } catch (err) {
          console.log(err);
          dispatch(signupFailure('Something went wrong. Please try again later.'));
       }
    };
+
+   const onSignupSuccess = () => {
+      dispatch(signupSuccess());
+
+      // set the form data to empty
+      setFormData({
+         username: '',
+         password: '',
+         confirmPassword: '',
+      });
+
+      // show the success alert
+      setShowAlert(true);
+   };
+
+   const validateForm = () => {
+      // check if the username is empty
+      if (!formData.username) {
+         dispatch(signupFailure('Username cannot be empty.'));
+         return false;
+      }
+
+      // check if the password is empty
+      if (!formData.password) {
+         dispatch(signupFailure('Password cannot be empty.'));
+         return false;
+      }
+
+      // check if the confirm password is empty
+      if (!formData.confirmPassword) {
+         dispatch(signupFailure('Confirm Password cannot be empty.'));
+         return false;
+      }
+
+      // check if the username is less than 3 characters
+      if (formData.username.length < 3) {
+         dispatch(signupFailure('Username must be at least 3 characters long.'));
+         return false;
+      }
+
+      // check if the password is less than 3 characters
+      if (formData.password.length < 3) {
+         dispatch(signupFailure('Password must be at least 3 characters long.'));
+         return false;
+      }
+
+      // check if password and confirm password match
+      if (formData.password !== formData.confirmPassword) {
+         dispatch(signupFailure('Passwords do not match.'));
+         return false;
+      }
+
+      return true;
+   }
 
    return (
       <div className="w-full h-screen flex flex-col justify-center items-center gap-10 px-7 bg-semiDark">
@@ -58,7 +116,9 @@ const SignUp = () => {
                type="text"
                name="username"
                id="username"
+               value={formData.username}
                placeholder="Username"
+               autoComplete="off"
                onChange={handleChange}
             />
             <input
@@ -66,6 +126,7 @@ const SignUp = () => {
                type="password"
                name="password"
                id="password"
+               value={formData.password}
                placeholder="Password"
                onChange={handleChange}
             />
@@ -74,6 +135,7 @@ const SignUp = () => {
                type="password"
                name="confirmPassword"
                id="confirmPassword"
+               value={formData.confirmPassword}
                placeholder="Confirm Password"
                onChange={handleChange}
             />
@@ -93,6 +155,8 @@ const SignUp = () => {
          </div>
 
          {error && <p className="text-red-700 mt-5 font-medium">{error}</p>}
+
+         {showAlert && <CustomAlert status="success" message="Sign up successful. Please sign in to continue." onClose={() => setShowAlert(false)} />}
       </div>
    );
 };

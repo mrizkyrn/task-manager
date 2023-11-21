@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupStart, signupSuccess, signupFailure } from '../redux/user/userSlice';
 import { Link } from 'react-router-dom';
-import CustomAlert from '../component/CustomAlert';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.min.css';
 
 const SignUp = () => {
    const [formData, setFormData] = useState({
@@ -12,7 +14,6 @@ const SignUp = () => {
    });
    const { loading, error } = useSelector((state) => state.user);
    const dispatch = useDispatch();
-   const [showAlert, setShowAlert] = useState(false);
 
    const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,12 +37,11 @@ const SignUp = () => {
          const data = await response.json();
 
          if (!data.success) {
-            dispatch(signupFailure(data.message));
+            onSignupFailure(data.message);
             return;
          }
 
          onSignupSuccess();
-         
       } catch (err) {
          console.log(err);
          dispatch(signupFailure('Something went wrong. Please try again later.'));
@@ -58,9 +58,14 @@ const SignUp = () => {
          confirmPassword: '',
       });
 
-      // show the success alert
-      setShowAlert(true);
+      // show the success toast
+      toast.success('Sign up successful!, Please sign in.');
    };
+
+   const onSignupFailure = (message) => {
+      dispatch(signupFailure(message));
+      toast.error(message);
+   }
 
    const validateForm = () => {
       // check if the username is empty
@@ -100,7 +105,7 @@ const SignUp = () => {
       }
 
       return true;
-   }
+   };
 
    return (
       <div className="w-full h-screen flex flex-col justify-center items-center gap-10 px-7 bg-semiDark">
@@ -148,7 +153,7 @@ const SignUp = () => {
             </button>
          </form>
          <div className="mt-5">
-            <span className='text-light'>Already have an account? </span>
+            <span className="text-light">Already have an account? </span>
             <Link className="text-sky-600 font-bold" to="/signin">
                Sign In
             </Link>
@@ -156,7 +161,7 @@ const SignUp = () => {
 
          {error && <p className="text-red-700 mt-5 font-medium">{error}</p>}
 
-         {showAlert && <CustomAlert status="success" message="Sign up successful. Please sign in to continue." onClose={() => setShowAlert(false)} />}
+         <ToastContainer />
       </div>
    );
 };

@@ -1,21 +1,26 @@
 import { useState } from 'react';
 import BackButton from '../component/BackButton';
 import Container from '../component/Container';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.min.css';
+
+const initialForm = {
+   title: '',
+   description: '',
+   notes: '',
+   priority: 'medium',
+   dueDate: '',
+   dueTime: '',
+};
 
 const CreateTask = () => {
-   const [form, setForm] = useState({
-      title: '',
-      description: '',
-      notes: '',
-      priority: 'medium',
-      dueDate: '',
-      dueTime: '',
-   });
+   const [form, setForm] = useState(initialForm);
 
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      if (!form.title) return;
+      if (!validateForm()) return;
 
       try {
          const res = await fetch('http://localhost:3000/api/tasks', {
@@ -27,18 +32,42 @@ const CreateTask = () => {
             body: JSON.stringify(form),
          });
          const data = await res.json();
-         console.log(data);
+
+         if (!data.success) {
+            onSubmitFailure(data.message);
+            return;
+         }
+
+         onSubmitSuccess();
       } catch (err) {
          console.log(err);
+         onSubmitFailure('Something went wrong. Please try again later.');
+      }
+   };
+
+   const validateForm = () => {
+      // check if the title is empty
+      if (!form.title) {
+         toast.error('Title cannot be empty.');
+         return false;
       }
 
-      setForm({
-         title: '',
-         description: '',
-         notes: '',
-         priority: 'medium',
-         dueDate: '',
-         dueTime: '',
+      return true;
+   };
+
+   const onSubmitSuccess = () => {
+      // set the form data to empty
+      setForm(initialForm);
+
+      // show the success toast
+      toast.success('Task created successfully.', {
+         theme: 'colored',
+      });
+   };
+
+   const onSubmitFailure = (message) => {
+      toast.error(message, {
+         theme: 'colored',
       });
    };
 
@@ -162,6 +191,8 @@ const CreateTask = () => {
                Create Task
             </button>
          </form>
+
+         <ToastContainer />
       </Container>
    );
 };

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import BackButton from '../component/BackButton';
 import Container from '../component/Container';
 import { ToastContainer, toast } from 'react-toastify';
-
 import 'react-toastify/dist/ReactToastify.min.css';
 import Button from '../component/Button';
 
@@ -40,9 +39,10 @@ const CreateTask = () => {
          }
 
          onSubmitSuccess();
+         console.log(data.data);
       } catch (err) {
-         console.log(err);
          onSubmitFailure('Something went wrong. Please try again later.');
+         console.log(err);
       }
    };
 

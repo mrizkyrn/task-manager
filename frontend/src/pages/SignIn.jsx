@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import Button from '../component/Button';
 
 const SignIn = () => {
    const [formData, setFormData] = useState({});
@@ -69,13 +70,9 @@ const SignIn = () => {
                placeholder="Password"
                onChange={handleChange}
             />
-            <button
-               className="w-full bg-[#415c8a] hover:bg-[#2d4369] px-5 py-2 rounded-md text-white font-semibold mt-5"
-               type="submit"
-               disabled={loading}
-            >
+            <Button className="w-full" type="submit" disabled={loading}>
                {loading ? 'Loading...' : 'Sign In'}
-            </button>
+            </Button>
          </form>
          <div className="mt-5">
             <span className="text-light">Don&apos;t have an account? </span>

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.min.css';
+import Button from '../component/Button';
 
 const SignUp = () => {
    const [formData, setFormData] = useState({
@@ -65,7 +66,7 @@ const SignUp = () => {
    const onSignupFailure = (message) => {
       dispatch(signupFailure(message));
       toast.error(message);
-   }
+   };
 
    const validateForm = () => {
       // check if the username is empty
@@ -144,17 +145,13 @@ const SignUp = () => {
                placeholder="Confirm Password"
                onChange={handleChange}
             />
-            <button
-               className="w-full bg-[#415c8a] hover:bg-[#2d4369] px-5 py-2 rounded-md text-white font-semibold mt-5"
-               type="submit"
-               disabled={loading}
-            >
+            <Button className="w-full" type="submit" disabled={loading}>
                {loading ? 'Loading...' : 'Sign Up'}
-            </button>
+            </Button>
          </form>
          <div className="mt-5">
             <span className="text-light">Already have an account? </span>
-            <Link className="text-sky-600 font-bold" to="/signin">
+            <Link className="text-sky-400 font-bold" to="/signin">
                Sign In
             </Link>
          </div>

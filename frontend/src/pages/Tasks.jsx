@@ -25,10 +25,7 @@ const Tasks = () => {
       <Container>
          <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-200">My Tasks</h1>
-            <Link
-               to={'create'}
-               className="bg-[#415c8a] hover:bg-[#2d4369] px-5 py-2 rounded-md text-white font-semibold"
-            >
+            <Link to={'create'} className="bg-primary hover:bg-[#2d4369] px-5 py-2 rounded-md text-white font-semibold">
                <span>
                   <AddIcon className="w-6 h-6 inline-block mr-2" />
                </span>

@@ -10,7 +10,7 @@ export default {
         dark: '#0e131c',
         semiDark: '#17202e',
         light: '#f5f5f5',
-        primary: '#f3c614',
+        primary: '#376294',
         secondary: '#353535',
       },
       fontFamily: {

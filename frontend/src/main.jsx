@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import { ChakraProvider } from '@chakra-ui/react'
 import store, { persistor } from './redux/store';
 import SignUp from './pages/SignUp.jsx';
 import SignIn from './pages/SignIn.jsx';
@@ -49,9 +48,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
    <Provider store={store}>
       <PersistGate persistor={persistor} loading={null}>
-         <ChakraProvider>
             <RouterProvider router={router} />
-         </ChakraProvider>
       </PersistGate>
    </Provider>
 );

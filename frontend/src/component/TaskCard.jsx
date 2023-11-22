@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { KebabMenuIcon } from './Icons';
+import MenuButton from './MenuButton';
 
 const TaskCard = ({ task }) => {
    const priorityColor = () => {
@@ -21,12 +21,20 @@ const TaskCard = ({ task }) => {
       day: 'numeric',
    });
 
+   const handleEdit = () => {
+      console.log('edit');
+   }
+
+   const handleDelete = () => {
+      console.log('delete');
+   }
+
    return (
       <div className="w-full h-32 flex flex-col justify-between bg-[#212e42] rounded-md px-5 py-4">
          <div>
             <div className="flex justify-between items-center">
                <h1 className="text-2xl font-bold text-gray-200">{task.title}</h1>
-               <KebabMenuIcon className="w-5 h-5 text-gray-200" />
+               <MenuButton onEdit={handleEdit} onDelete={handleDelete} />
             </div>
             <p className="leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
          </div>

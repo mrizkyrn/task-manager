@@ -68,6 +68,7 @@ const Navbar = () => {
                      <NavLink
                         key={name}
                         to={path}
+                        aria-label={name}
                         className={({ isActive }) =>
                            `flex items-center justify-start gap-3 h-12 px-[0.85rem] rounded-lg text-light hover:bg-gray-700 ${
                               isActive ? 'bg-gray-800' : ''
@@ -81,6 +82,7 @@ const Navbar = () => {
                </nav>
                <button
                   className="w-full flex justify-start items-center gap-3 h-12 px-3 rounded-lg text-light hover:bg-gray-600 text-start"
+                  aria-label="logout"
                   onClick={handleLogout}
                >
                   <div>

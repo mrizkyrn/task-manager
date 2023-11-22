@@ -4,6 +4,7 @@ import Container from '../component/Container';
 import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.min.css';
+import Button from '../component/Button';
 
 const initialForm = {
    title: '',
@@ -184,12 +185,9 @@ const CreateTask = () => {
             </div> */}
 
             {/* Submit */}
-            <button
-               type="submit"
-               className="bg-[#415c8a] hover:bg-[#2d4369] px-5 py-2 rounded-md text-white font-semibold mt-5"
-            >
+            <Button className="w-full" type="submit">
                Create Task
-            </button>
+            </Button>
          </form>
 
          <ToastContainer />

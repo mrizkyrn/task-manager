@@ -2,9 +2,7 @@ import PropTypes from 'prop-types';
 
 const DialogAlert = ({ message, actionText, onCancel, onAction }) => {
    return (
-      <div
-         className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center"
-      >
+      <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
          <div className="bg-semiDark border border-dark shadow-md rounded-md px-4 py-5">
             <p className="text-light">{message}</p>
             <div className="flex justify-end gap-3 mt-5">
@@ -21,7 +19,6 @@ const DialogAlert = ({ message, actionText, onCancel, onAction }) => {
                   {actionText}
                </button>
             </div>
-
          </div>
       </div>
    );

@@ -4,11 +4,13 @@ import Container from '../component/Container';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Button from '../component/Button';
+import { AddIcon } from '../component/Icons';
+import NoteInput from '../component/NoteInput';
 
 const initialForm = {
    title: '',
    description: '',
-   notes: '',
+   notes: [],
    priority: 'medium',
    dueDate: '',
    dueTime: '',
@@ -17,12 +19,18 @@ const initialForm = {
 const CreateTask = () => {
    const [form, setForm] = useState(initialForm);
 
+   const handleAddNote = () => {
+      setForm({ ...form, notes: [...form.notes, ''] });
+   };
+
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      console.log(form);
-
+      
       if (!validateForm()) return;
+      
+      const notes = form.notes.filter((note) => note !== '');
+      console.log({ ...form, notes });
 
       try {
          const res = await fetch('/api/tasks', {
@@ -31,7 +39,7 @@ const CreateTask = () => {
             headers: {
                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(form),
+            body: JSON.stringify({ ...form, notes }),
          });
          const data = await res.json();
 
@@ -51,7 +59,10 @@ const CreateTask = () => {
    const validateForm = () => {
       // check if the title is empty
       if (!form.title) {
-         toast.error('Title cannot be empty.');
+         toast.error('Title cannot be empty.', {
+            position: 'top-left',
+            theme: 'colored',
+         });
          return false;
       }
 
@@ -116,18 +127,26 @@ const CreateTask = () => {
 
             {/* Additonal Notes */}
             <div className="flex flex-col gap-2">
-               <label htmlFor="notes" className="text-gray-200">
+               <label className="text-gray-200">
                   Additonal Notes
                </label>
-               <textarea
-                  name="notes"
-                  id="notes"
-                  placeholder="Enter notes"
-                  rows="4"
-                  className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
-                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  value={form.notes}
-               />
+               {
+                     form.notes.length > 0 && (
+                        <ul className="flex flex-col gap-5">
+                           {form.notes.map((note, index) => (
+                              <NoteInput key={index} index={index} form={form} setForm={setForm} />
+                           ))}
+                        </ul>
+                     )
+                  }
+               <button
+                  type="button"
+                  className="flex bg-[#2b3d56] p-3 rounded-md text-gray-200 mx-auto mt-3"
+                  onClick={handleAddNote}
+               >
+                  <AddIcon className="w-6 h-6 mr-3" />
+                  Add Notes
+               </button>
             </div>
 
             {/* Priority */}

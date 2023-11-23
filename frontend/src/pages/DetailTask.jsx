@@ -15,10 +15,15 @@ const DetailTask = () => {
          </div>
          <div className="mt-10 leading-7">
             <p className="text-[#a7acb5]">{task.description}</p>
-            {task.notes && (
+            {task.notes.length > 0 && (
                <>
                   <h2 className="text-xl font-semibold text-gray-200 mt-7">Additional Notes</h2>
-                  <p className="text-[#a7acb5] whitespace-pre-line mt-2">{task.notes}</p>
+                  {task.notes.map((note, index) => (
+                     <div key={index} className="flex items-start gap-3 justify-start mt-2">
+                        <span className="text-light">&#9900;</span>
+                        <p className="text-[#a7acb5]">{note}</p>
+                     </div>
+                  ))}
                </>
             )}
 

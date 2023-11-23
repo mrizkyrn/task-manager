@@ -11,6 +11,22 @@ const getTasks = async (req, res, next) => {
    }
 };
 
+const getTask = async (req, res, next) => {
+   const { id } = req.params;
+   const { id: userId } = req.user;
+
+   try {
+      const tasks = await Task.findById(id);
+      if (!tasks) return next(errorHandler(404, 'Task not found'));
+
+      if (tasks.users.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+
+      res.status(200).send({ success: true, message: 'Task fetched successfully', data: tasks });
+   } catch (error) {
+      next(error);
+   }
+};
+
 const createTask = async (req, res, next) => {
    const { title, description, notes, priority, dueDate, dueTime } = req.body;
    const { id } = req.user;
@@ -78,6 +94,7 @@ const deleteTask = async (req, res, next) => {
 
 module.exports = {
    getTasks,
+   getTask,
    createTask,
    updateTask,
    deleteTask,

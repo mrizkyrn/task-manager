@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const TaskCard = ({ task, onDelete }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
+   const [isHovered, setIsHovered] = useState(false);
    const navigate = useNavigate();
 
    const priorityColor = () => {
@@ -37,25 +38,37 @@ const TaskCard = ({ task, onDelete }) => {
       onDelete();
    };
 
+   const handleView = (task) => {
+      navigate(`/tasks/${task._id}`, { state: { task } });
+   };
+
    return (
-      <div className="w-full h-32 flex flex-col justify-between bg-[#212e42] rounded-md px-5 py-4">
+      <div
+         className={`w-full h-32 flex justify-between gap-3 rounded-md px-5 py-4 ${
+            isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'
+         }`}
+      >
          {isAlertOpen && (
             <DialogAlert
                message={`Are you sure you want to delete "${task.title}"?`}
+               actionText="Delete"
                onCancel={() => setIsAlertOpen(false)}
-               onDelete={handleDelete}
+               onAction={handleDelete}
             />
          )}
-         <div>
-            <div className="flex justify-between items-center">
-               <h1 className="text-2xl font-bold text-gray-200">{task.title}</h1>
-               <MenuButton onEdit={() => handleEdit(task)} onDelete={() => setIsAlertOpen(true)} />
-            </div>
+         <div
+            onClick={() => handleView(task)}
+            className="basis-full flex flex-col justify-between cursor-pointer"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+         >
+            <h1 className="text-2xl font-bold text-gray-200">{task.title}</h1>
             <p className="leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
-         </div>
-         <div className="flex justify-between items-center">
             <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
-            <p className="text-sm text-gray-400">{createdAt}</p>
+         </div>
+         <div className="basis-[12rem] flex flex-col justify-between items-end">
+            <MenuButton onEdit={() => handleEdit(task)} onDelete={() => setIsAlertOpen(true)} />
+            <p className="text-sm text-gray-400 text-right">{createdAt}</p>
          </div>
       </div>
    );

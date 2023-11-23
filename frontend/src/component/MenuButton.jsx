@@ -33,7 +33,7 @@ const MenuButton = ({onEdit, onDelete}) => {
    }, [isMenuOpen]);
 
    return (
-      <div className="relative">
+      <div className="relative flex justify-center items-center hover:bg-[#1b2738] rounded-lg w-7 h-7">
          <button ref={buttonRef} className="focus:outline-none" aria-label="kebab-menu" onClick={handleClickButton}>
             <KebabMenuIcon className={`w-5 h-5 ${isMenuOpen ? 'text-gray-500' : 'text-gray-200'}`} />
          </button>

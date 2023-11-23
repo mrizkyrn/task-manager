@@ -3,6 +3,7 @@ import { signoutStart, signoutSuccess, signoutFailure } from '../redux/user/user
 import { NavLink } from 'react-router-dom';
 import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
 import { useState } from 'react';
+import DialogAlert from './DialogAlert';
 
 const NavbarItems = () => [
    {
@@ -31,11 +32,12 @@ const Navbar = () => {
    const dispatch = useDispatch();
    const { currentUser, loading } = useSelector((state) => state.user);
    const [isHover, setIsHover] = useState(false);
+   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
    const handleLogout = async () => {
       try {
          dispatch(signoutStart());
-         
+
          const res = await fetch('/api/auth/signout', {
             method: 'GET',
          });
@@ -49,8 +51,7 @@ const Navbar = () => {
          }
 
          dispatch(signoutSuccess());
-      }
-      catch (err) {
+      } catch (err) {
          console.log(err);
          dispatch(signoutFailure('Something went wrong. Please try again later.'));
       }
@@ -58,6 +59,14 @@ const Navbar = () => {
 
    return (
       <>
+         {isAlertOpen && (
+            <DialogAlert
+               message="Are you sure you want to logout?"
+               actionText="Logout"
+               onCancel={() => setIsAlertOpen(false)}
+               onAction={handleLogout}
+            />
+         )}
          {/* Desktop Navbar */}
          <div className="w-20 lg:w-64 fixed flex-shrink-0 hidden sm:flex flex-col h-screen py-10 px-4 bg-dark border-r border-gray-700 duration-200 ease-in-out">
             <div className="flex items-start mt-6 -mx-2">
@@ -91,7 +100,7 @@ const Navbar = () => {
                <button
                   className="w-full flex justify-start items-center gap-3 h-12 px-3 rounded-lg text-light hover:bg-gray-600 text-start"
                   aria-label="logout"
-                  onClick={handleLogout}
+                  onClick={() => setIsAlertOpen(true)}
                >
                   <div>
                      <LogOutIcon className="w-5 h-5" />
@@ -129,7 +138,7 @@ const Navbar = () => {
 
                {isHover && (
                   <div className="absolute -top-28 right-0 w-36 bg-gray-800 rounded-lg shadow-lg flex flex-col justify-start items-start">
-                     <button className="py-3 pl-4 text-light text-start" onClick={handleLogout}>
+                     <button className="py-3 pl-4 text-light text-start" onClick={() => setIsAlertOpen(true)}>
                         <LogOutIcon className="w-5 h-5 inline-block mr-3" />
                         <span>Logout</span>
                      </button>

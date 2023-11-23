@@ -20,6 +20,8 @@ const CreateTask = () => {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
+      console.log(form);
+
       if (!validateForm()) return;
 
       try {

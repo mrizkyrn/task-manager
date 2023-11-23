@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const DialogAlert = ({ message, onCancel, onDelete }) => {
+const DialogAlert = ({ message, actionText, onCancel, onAction }) => {
    return (
       <div
          className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center"
@@ -16,9 +16,9 @@ const DialogAlert = ({ message, onCancel, onDelete }) => {
                </button>
                <button
                   className="mt-7 bg-red-600 text-white px-4 py-2 rounded-md focus:outline-none hover:bg-red-700"
-                  onClick={onDelete}
+                  onClick={onAction}
                >
-                  Delete
+                  {actionText}
                </button>
             </div>
 
@@ -29,8 +29,9 @@ const DialogAlert = ({ message, onCancel, onDelete }) => {
 
 DialogAlert.propTypes = {
    message: PropTypes.string.isRequired,
-   onCancel: PropTypes.func,
-   onDelete: PropTypes.func,
+   actionText: PropTypes.string.isRequired,
+   onCancel: PropTypes.func.isRequired,
+   onAction: PropTypes.func.isRequired,
 };
 
 export default DialogAlert;

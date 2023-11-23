@@ -4,17 +4,21 @@ import Container from '../component/Container';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Button from '../component/Button';
+import { useLocation } from 'react-router-dom';
 
-const initialForm = {
-   title: '',
-   description: '',
-   notes: '',
-   priority: 'medium',
-   dueDate: '',
-   dueTime: '',
-};
+const EditTask = () => {
+   const location = useLocation();
+   const task = location.state.task;
 
-const CreateTask = () => {
+   const initialForm = {
+      title: task.title,
+      description: task.description,
+      notes: task.notes,
+      priority: task.priority,
+      dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
+      dueTime: task.dueTime ? task.dueTime : '',
+   };
+
    const [form, setForm] = useState(initialForm);
 
    const handleSubmit = async (e) => {
@@ -23,8 +27,8 @@ const CreateTask = () => {
       if (!validateForm()) return;
 
       try {
-         const res = await fetch('/api/tasks', {
-            method: 'POST',
+         const res = await fetch(`/api/tasks/${task._id}`, {
+            method: 'PUT',
             credentials: 'include',
             headers: {
                'Content-Type': 'application/json',
@@ -39,7 +43,7 @@ const CreateTask = () => {
          }
 
          onSubmitSuccess();
-         console.log(data.data);
+         console.log(data);
       } catch (err) {
          onSubmitFailure('Something went wrong. Please try again later.');
          console.log(err);
@@ -57,11 +61,8 @@ const CreateTask = () => {
    };
 
    const onSubmitSuccess = () => {
-      // set the form data to empty
-      setForm(initialForm);
-
       // show the success toast
-      toast.success('Task created successfully.', {
+      toast.success('Task updated successfully.', {
          theme: 'colored',
       });
    };
@@ -75,8 +76,8 @@ const CreateTask = () => {
    return (
       <Container>
          <div>
-            <BackButton />
-            <h1 className="inline text-3xl font-semibold text-gray-200 ml-2">Create Task</h1>
+            <BackButton to={'../..'} />
+            <h1 className="inline text-3xl font-semibold text-gray-200 ml-2">Edit Task</h1>
          </div>
 
          <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit}>
@@ -186,7 +187,7 @@ const CreateTask = () => {
 
             {/* Submit */}
             <Button className="w-full" type="submit">
-               Create Task
+               Save Task
             </Button>
          </form>
 
@@ -195,4 +196,4 @@ const CreateTask = () => {
    );
 };
 
-export default CreateTask;
+export default EditTask;

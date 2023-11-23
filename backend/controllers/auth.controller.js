@@ -45,7 +45,7 @@ const signin = async (req, res, next) => {
 
 const signout = async (req, res, next) => {
    try {
-      res.clearCookie('access_token').status(200).send({ success: true, message: 'User signed out successfully' });
+      res.clearCookie('access_token', { httpOnly: true, secure: true }).status(200).send({ success: true, message: 'User signed out successfully' });
    } catch (error) {
       next(error);
    }

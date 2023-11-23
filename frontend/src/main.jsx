@@ -11,6 +11,7 @@ import Layout from './component/Layout.jsx';
 import Home from './pages/Home.jsx';
 import Tasks, { loader as tasksLoader } from './pages/Tasks.jsx';
 import CreateTask from './pages/CreateTask.jsx';
+import EditTask from './pages/EditTask.jsx';
 
 const router = createBrowserRouter([
    {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
          {
             path: '/tasks/create',
             element: <CreateTask />,
+         },
+         {
+            path: '/tasks/:id/edit',
+            element: <EditTask />,
          }
       ],
    },

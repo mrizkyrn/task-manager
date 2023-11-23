@@ -14,8 +14,13 @@ export async function loader() {
          credentials: 'include',
       });
       const data = await res.json();
-      if (data.success) return data.data;
-      return null;
+
+      if (!data.success) {
+         console.log(data.message);
+         return null;
+      }
+
+      return data.data;
    } catch (err) {
       console.log(err);
       return null;

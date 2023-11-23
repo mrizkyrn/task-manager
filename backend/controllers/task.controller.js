@@ -38,6 +38,33 @@ const createTask = async (req, res, next) => {
    }
 }
 
+const updateTask = async (req, res, next) => {
+   const { id } = req.params;
+   const { title, description, notes, priority, dueDate, dueTime, completed } = req.body;
+   const { id: userId } = req.user;
+   console.log(id, userId);
+
+   try {
+      const task = await Task.findById(id);
+      if (!task) return next(errorHandler(404, 'Task not found'));
+
+      if (task.users.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+
+      task.title = title;
+      task.description = description;
+      task.notes = notes;
+      task.priority = priority;
+      task.dueDate = dueDate;
+      task.dueTime = dueTime;
+      task.completed = completed;
+
+      await task.save();
+      res.status(200).send({ success: true, message: 'Task updated successfully', data: task });
+   } catch (error) {
+      next(error);
+   }
+}
+
 const deleteTask = async (req, res, next) => {
    const { id } = req.params;
    
@@ -52,5 +79,6 @@ const deleteTask = async (req, res, next) => {
 module.exports = {
    getTasks,
    createTask,
+   updateTask,
    deleteTask,
 };

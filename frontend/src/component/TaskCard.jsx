@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import MenuButton from './MenuButton';
 import DialogAlert from './DialogAlert';
+import { useNavigate } from 'react-router-dom';
 
 const TaskCard = ({ task, onDelete }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
+   const navigate = useNavigate();
 
    const priorityColor = () => {
       switch (task.priority) {
@@ -25,8 +27,8 @@ const TaskCard = ({ task, onDelete }) => {
       day: 'numeric',
    });
 
-   const handleEdit = () => {
-      console.log('edit');
+   const handleEdit = (task) => {
+      navigate(`/tasks/${task._id}/edit`, { state: { task } });
    };
 
    const handleDelete = async () => {
@@ -47,7 +49,7 @@ const TaskCard = ({ task, onDelete }) => {
          <div>
             <div className="flex justify-between items-center">
                <h1 className="text-2xl font-bold text-gray-200">{task.title}</h1>
-               <MenuButton onEdit={handleEdit} onDelete={() => setIsAlertOpen(true)} />
+               <MenuButton onEdit={() => handleEdit(task)} onDelete={() => setIsAlertOpen(true)} />
             </div>
             <p className="leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
          </div>
@@ -61,6 +63,7 @@ const TaskCard = ({ task, onDelete }) => {
 
 TaskCard.propTypes = {
    task: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       priority: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,

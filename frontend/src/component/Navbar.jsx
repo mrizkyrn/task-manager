@@ -32,13 +32,21 @@ const Navbar = () => {
    const { currentUser, loading } = useSelector((state) => state.user);
    const [isHover, setIsHover] = useState(false);
 
-   const handleLogout = () => {
+   const handleLogout = async () => {
       try {
          dispatch(signoutStart());
          
-         fetch('/api/auth/signout', {
+         const res = await fetch('/api/auth/signout', {
             method: 'GET',
          });
+
+         const data = await res.json();
+
+         if (!data.success) {
+            console.log(data.message);
+            dispatch(signoutFailure('Something went wrong. Please try again later.'));
+            return;
+         }
 
          dispatch(signoutSuccess());
       }

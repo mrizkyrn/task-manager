@@ -8,7 +8,7 @@ const NoteInput = ({ index, form, setForm }) => {
          <input
             name={`notes-${index}`}
             id={`notes-${index}`}
-            placeholder={`Enter notes ${index + 1}`}
+            placeholder={`Enter note ${index + 1}`}
             className="w-full bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
             onChange={(e) => {
                const notes = [...form.notes];

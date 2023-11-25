@@ -5,8 +5,12 @@ import BackButton from '../component/BackButton';
 const DetailTask = () => {
    const location = useLocation();
    const task = location.state.task;
+   const dueDate = new Date(task.dueDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+   });
 
-   console.log(task);
    return (
       <Container>
          <div>
@@ -28,8 +32,8 @@ const DetailTask = () => {
             )}
 
             <p className="text-[#a7acb5] mt-2">Priority: {task.priority}</p>
-            <p className="text-[#a7acb5]">Due Date: {task.dueDate}</p>
-            <p className="text-[#a7acb5]">Due Time: {task.dueTime}</p>
+            <p className="text-[#a7acb5] mt-2">Due: {dueDate} at {task.dueTime}</p>
+
          </div>
       </Container>
    );

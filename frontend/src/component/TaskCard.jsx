@@ -3,8 +3,11 @@ import { useState } from 'react';
 import MenuButton from './MenuButton';
 import DialogAlert from './DialogAlert';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+import { CheckIcon } from './Icons';
 
-const TaskCard = ({ task, onDelete }) => {
+const TaskCard = ({ task, setTasks }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
    const [isHovered, setIsHovered] = useState(false);
    const navigate = useNavigate();
@@ -28,14 +31,62 @@ const TaskCard = ({ task, onDelete }) => {
       day: 'numeric',
    });
 
+   const handleMarkAsCompleted = async (id, value) => {
+      try {
+         const res = await fetch(`/api/tasks/${id}`, {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ completed: value }),
+         });
+         const data = await res.json();
+
+         if (!data.success) {
+            console.log(data.message);
+            toast.error('Something went wrong. Please try again later.', {
+               theme: 'colored',
+            });
+            return;
+         }
+
+         setTasks((prev) => prev.map((task) => (task._id === id ? { ...task, completed: value } : task)));
+      } catch (err) {
+         console.log(err);
+      }
+   };
+
    const handleEdit = (task) => {
       navigate(`/tasks/${task._id}/edit`, { state: { task } });
    };
 
-   const handleDelete = async () => {
+   const handleDelete = async (id) => {
       setIsAlertOpen(false);
 
-      onDelete();
+      try {
+         const res = await fetch(`/api/tasks/${id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+         });
+         const data = await res.json();
+
+         if (!data.success) {
+            console.log(data.message);
+            toast.error('Something went wrong. Please try again later.', {
+               theme: 'colored',
+            });
+            return;
+         }
+
+         console.log(data);
+         setTasks((prev) => prev.filter((task) => task._id !== id));
+         toast.success('Task deleted successfully.', {
+            theme: 'colored',
+         });
+      } catch (err) {
+         console.log(err);
+      }
    };
 
    const handleView = (task) => {
@@ -43,32 +94,41 @@ const TaskCard = ({ task, onDelete }) => {
    };
 
    return (
-      <div
-         className={`w-full h-32 flex justify-between gap-3 rounded-md px-5 py-4 ${
-            isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'
-         }`}
-      >
-         {isAlertOpen && (
-            <DialogAlert
-               message={`Are you sure you want to delete "${task.title}"?`}
-               actionText="Delete"
-               onCancel={() => setIsAlertOpen(false)}
-               onAction={handleDelete}
-            />
+      <div className={`w-full h-32 flex justify-between rounded-md ${isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'}`}>
+         <ToastContainer />
+         {task.completed && (
+            <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
+               <CheckIcon className="w-10 h-10 text-light" />
+            </div>
          )}
-         <div
-            onClick={() => handleView(task)}
-            className="basis-full flex flex-col justify-between cursor-pointer"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-         >
-            <h1 className="text-2xl font-bold text-gray-200">{task.title}</h1>
-            <p className="leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
-            <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
-         </div>
-         <div className="basis-[12rem] flex flex-col justify-between items-end">
-            <MenuButton onEdit={() => handleEdit(task)} onDelete={() => setIsAlertOpen(true)} />
-            <p className="text-sm text-gray-400 text-right">{createdAt}</p>
+         <div className="w-full flex justify-between px-5 py-4">
+            {isAlertOpen && (
+               <DialogAlert
+                  message={`Are you sure you want to delete "${task.title}"?`}
+                  actionText="Delete"
+                  onCancel={() => setIsAlertOpen(false)}
+                  onAction={() => handleDelete(task._id)}
+               />
+            )}
+            <div
+               onClick={() => handleView(task)}
+               className="basis-full flex flex-col justify-between cursor-pointer"
+               onMouseEnter={() => setIsHovered(true)}
+               onMouseLeave={() => setIsHovered(false)}
+            >
+               <h1 className="text-xl md:text-2xl line-clamp-1 font-bold text-gray-200">{task.title}</h1>
+               <p className="text-sm md:text-base leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
+               <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
+            </div>
+            <div className="text-sm sm:text-base basis-44 flex flex-col justify-between items-end">
+               <MenuButton
+                  onCompleted={() => handleMarkAsCompleted(task._id, !task.completed)}
+                  onEdit={() => handleEdit(task)}
+                  onDelete={() => setIsAlertOpen(true)}
+                  isCompleted={task.completed}
+               />
+               <p className="hidden sm:block text-sm text-gray-400 text-right">{createdAt}</p>
+            </div>
          </div>
       </div>
    );
@@ -81,8 +141,9 @@ TaskCard.propTypes = {
       priority: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       createdAt: PropTypes.string.isRequired,
+      completed: PropTypes.bool.isRequired,
    }).isRequired,
-   onDelete: PropTypes.func.isRequired,
+   setTasks: PropTypes.func.isRequired,
 };
 
 export default TaskCard;

@@ -131,8 +131,6 @@ const Navbar = () => {
                   className="object-cover w-6 h-6 rounded-full"
                   src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
                   alt="avatar"
-                  // onMouseEnter={() => setIsHover(true)}
-                  // onMouseLeave={() => setIsHover(false)}
                   onClick={() => setIsHover(!isHover)}
                />
 

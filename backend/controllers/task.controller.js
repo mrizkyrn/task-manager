@@ -92,10 +92,31 @@ const deleteTask = async (req, res, next) => {
    }
 }
 
+const updateTaskStatus = async (req, res, next) => {
+   const { id } = req.params;
+   const { completed } = req.body;
+   const { id: userId } = req.user;
+
+   try {
+      const task = await Task.findById(id);
+      if (!task) return next(errorHandler(404, 'Task not found'));
+
+      if (task.users.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+
+      task.completed = completed;
+      await task.save();
+      res.status(200).send({ success: true, message: 'Task status updated successfully', data: task });
+   }
+   catch (error) {
+      next(error);
+   }
+}
+
 module.exports = {
    getTasks,
    getTask,
    createTask,
    updateTask,
    deleteTask,
+   updateTaskStatus,
 };

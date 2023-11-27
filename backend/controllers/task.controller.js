@@ -4,7 +4,7 @@ const User = require('../models/user.model.js');
 
 const getTasks = async (req, res, next) => {
    try {
-      const tasks = await Task.find({ users: req.user.id });
+      const tasks = await Task.find({ users: req.user.id }).populate('creator', 'username');
       res.status(200).send({ success: true, message: 'Tasks fetched successfully', data: tasks });
    } catch (error) {
       next(error);
@@ -40,6 +40,7 @@ const createTask = async (req, res, next) => {
          dueDate,
          dueTime,
          completed: false,
+         creator: id,
          users: [id],
       });
 

@@ -1,9 +1,9 @@
 const express = require('express');
+const { editUsername } = require('../controllers/user.controller');
+const verifyToken = require('../utils/userVerify.js');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-   res.send('Hello from user route');
-});
+router.patch('/:id', verifyToken, editUsername);
 
 module.exports = router;

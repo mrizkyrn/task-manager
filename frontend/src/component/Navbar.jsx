@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
 import { useState } from 'react';
 import DialogAlert from './DialogAlert';
+import UserProfile from './UserProfile';
 
 const NavbarItems = () => [
    {
@@ -31,8 +32,12 @@ const NavbarItems = () => [
 const Navbar = () => {
    const dispatch = useDispatch();
    const { currentUser, loading } = useSelector((state) => state.user);
-   const [isHover, setIsHover] = useState(false);
+   const [isProfileOpen, setIsProfileOpen] = useState(false);
    const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+   const handleProfileClick = () => {
+      setIsProfileOpen(true);
+   };
 
    const handleLogout = async () => {
       try {
@@ -67,10 +72,15 @@ const Navbar = () => {
                onAction={handleLogout}
             />
          )}
+         {isProfileOpen && (
+            <UserProfile onClose={() => setIsProfileOpen(false)} onLogout={() => setIsAlertOpen(true)} />
+         )}
+
          {/* Desktop Navbar */}
          <div className="w-20 lg:w-64 fixed flex-shrink-0 hidden sm:flex flex-col h-screen py-10 px-4 bg-dark border-r border-gray-700 duration-200 ease-in-out">
             <div className="flex items-start mt-6 -mx-2">
                <img
+                  onClick={handleProfileClick}
                   className="object-cover mx-2 rounded-full duration-300 ease-in-out w-12 h-12"
                   src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
                   alt="avatar"
@@ -131,18 +141,8 @@ const Navbar = () => {
                   className="object-cover w-6 h-6 rounded-full"
                   src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
                   alt="avatar"
-                  onClick={() => setIsHover(!isHover)}
+                  onClick={handleProfileClick}
                />
-
-               {isHover && (
-                  <div className="absolute -top-28 right-0 w-36 bg-gray-800 rounded-lg shadow-lg flex flex-col justify-start items-start">
-                     <button className="py-3 pl-4 text-light text-start" onClick={() => setIsAlertOpen(true)}>
-                        <LogOutIcon className="w-5 h-5 inline-block mr-3" />
-                        <span>Logout</span>
-                     </button>
-                     {currentUser && <h4 className="py-3 pl-4 font-medium text-gray-200">{currentUser.username}</h4>}
-                  </div>
-               )}
             </div>
          </div>
       </>

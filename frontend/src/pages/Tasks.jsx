@@ -4,8 +4,6 @@ import TaskCard from '../component/TaskCard';
 import { AddIcon } from '../component/Icons';
 import { useState } from 'react';
 
-
-
 export async function loader() {
    try {
       const res = await fetch('/api/tasks', {

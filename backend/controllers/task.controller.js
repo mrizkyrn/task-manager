@@ -30,7 +30,7 @@ const getTask = async (req, res, next) => {
 const createTask = async (req, res, next) => {
    const { title, description, notes, priority, dueDate, dueTime } = req.body;
    const { id } = req.user;
-   
+
    try {
       const task = new Task({
          title,
@@ -53,7 +53,7 @@ const createTask = async (req, res, next) => {
    } catch (error) {
       next(error);
    }
-}
+};
 
 const updateTask = async (req, res, next) => {
    const { id } = req.params;
@@ -79,18 +79,18 @@ const updateTask = async (req, res, next) => {
    } catch (error) {
       next(error);
    }
-}
+};
 
 const deleteTask = async (req, res, next) => {
    const { id } = req.params;
-   
+
    try {
       const deletedTask = await Task.findByIdAndDelete(id);
       res.status(200).send({ success: true, message: 'Task deleted successfully', data: deletedTask });
    } catch (error) {
       next(error);
    }
-}
+};
 
 const updateTaskStatus = async (req, res, next) => {
    const { id } = req.params;
@@ -106,8 +106,41 @@ const updateTaskStatus = async (req, res, next) => {
       task.completed = completed;
       await task.save();
       res.status(200).send({ success: true, message: 'Task status updated successfully', data: task });
+   } catch (error) {
+      next(error);
    }
-   catch (error) {
+};
+
+const getAllUsers = async (req, res, next)  => {
+   const { id } = req.params;
+
+   try {
+      const usersId = await Task.findById(id, 'users');
+      const users = await User.find({ _id: { $in: usersId.users } }, 'username');
+      res.status(200).send({ success: true, message: 'Users fetched successfully', data: users });
+   } catch (error) {
+      next(error);
+   }
+}
+
+const addUser = async (req, res, next) => {
+   const { id } = req.params;
+   const { userId } = req.body;
+
+   try {
+      const task = await Task.findById(id);
+      if (!task) return next(errorHandler(404, 'Task not found'));
+
+      const user = await User.findById(userId);
+      if (!user) return next(errorHandler(404, 'User not found'));
+
+      if (task.users.indexOf(userId) !== -1) return next(errorHandler(400, 'User already added'));
+
+      task.users.push(userId);
+      await task.save();
+
+      res.status(200).send({ success: true, message: 'User added successfully', data: task });
+   } catch (error) {
       next(error);
    }
 }
@@ -119,4 +152,6 @@ module.exports = {
    updateTask,
    deleteTask,
    updateTaskStatus,
+   getAllUsers,
+   addUser,
 };

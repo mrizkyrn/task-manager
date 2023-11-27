@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import BackButton from '../component/BackButton';
-import Container from '../component/Container';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
-import Button from '../component/Button';
 import { AddIcon } from '../component/Icons';
+import Container from '../component/Container';
+import Button from '../component/Button';
 import NoteInput from '../component/NoteInput';
+import HeaderTitle from '../component/HeaderTitle';
+
 
 const initialForm = {
    title: '',
@@ -26,9 +26,9 @@ const CreateTask = () => {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      
       if (!validateForm()) return;
       
+      // remove empty notes
       const notes = form.notes.filter((note) => note !== '');
 
       try {
@@ -40,6 +40,7 @@ const CreateTask = () => {
             },
             body: JSON.stringify({ ...form, notes }),
          });
+
          const data = await res.json();
 
          if (!data.success) {
@@ -85,10 +86,7 @@ const CreateTask = () => {
 
    return (
       <Container>
-         <div className='flex items-start gap-2'>
-            <BackButton />
-            <h1 className="inline text-2xl sm:text-3xl font-semibold text-gray-200 ml-2">Create Task</h1>
-         </div>
+         <HeaderTitle title="Create Task" /> 
 
          <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit}>
             {/* Title */}
@@ -194,14 +192,6 @@ const CreateTask = () => {
                   value={form.dueTime}
                />
             </div>
-
-            {/* Additional Files */}
-            {/* <div className="flex flex-col gap-2">
-               <label htmlFor="files" className="text-gray-200">
-                  Additional Files
-               </label>
-               <input type="file" name="files" id="files" className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200" />
-            </div> */}
 
             {/* Submit */}
             <Button className="w-full" type="submit">

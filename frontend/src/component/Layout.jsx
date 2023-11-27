@@ -7,6 +7,7 @@ const Layout = () => {
    const { currentUser } = useSelector((state) => state.user);
    const navigate = useNavigate();
 
+   // if user is not logged in, redirect to signin page
    useEffect(() => {
       if (!currentUser) {
          navigate('/signin');

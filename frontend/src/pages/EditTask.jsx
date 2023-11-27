@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import BackButton from '../component/BackButton';
-import Container from '../component/Container';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
-import Button from '../component/Button';
 import { useLocation } from 'react-router-dom';
-import NoteInput from '../component/NoteInput';
+import { ToastContainer, toast } from 'react-toastify';
 import { AddIcon } from '../component/Icons';
+import Container from '../component/Container';
+import Button from '../component/Button';
+import NoteInput from '../component/NoteInput';
+import HeaderTitle from '../component/HeaderTitle';
+
 
 const EditTask = () => {
    const location = useLocation();
@@ -33,6 +33,7 @@ const EditTask = () => {
 
       if (!validateForm()) return;
 
+      // remove empty notes
       const notes = form.notes.filter((note) => note !== '');
 
       try {
@@ -52,7 +53,6 @@ const EditTask = () => {
          }
 
          onSubmitSuccess();
-         console.log(data);
       } catch (err) {
          onSubmitFailure('Something went wrong. Please try again later.');
          console.log(err);
@@ -84,10 +84,7 @@ const EditTask = () => {
 
    return (
       <Container>
-         <div>
-            <BackButton to={'../..'} />
-            <h1 className="inline text-3xl font-semibold text-gray-200 ml-2">Edit Task</h1>
-         </div>
+         <HeaderTitle title="Edit Task" backTo={'../..'} />
 
          <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit}>
             {/* Title */}
@@ -189,14 +186,6 @@ const EditTask = () => {
                   value={form.dueTime}
                />
             </div>
-
-            {/* Additional Files */}
-            {/* <div className="flex flex-col gap-2">
-               <label htmlFor="files" className="text-gray-200">
-                  Additional Files
-               </label>
-               <input type="file" name="files" id="files" className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200" />
-            </div> */}
 
             {/* Submit */}
             <Button className="w-full" type="submit">

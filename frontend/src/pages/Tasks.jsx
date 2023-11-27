@@ -1,8 +1,8 @@
-import Container from '../component/Container';
-import { Link, useLoaderData } from 'react-router-dom';
-import TaskCard from '../component/TaskCard';
-import { AddIcon } from '../component/Icons';
 import { useState } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
+import { AddIcon } from '../component/Icons';
+import Container from '../component/Container';
+import TaskCard from '../component/TaskCard';
 
 export async function loader() {
    try {
@@ -31,6 +31,7 @@ const Tasks = () => {
       <Container>
          <div className="flex justify-between items-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-200">My Tasks</h1>
+            
             <Link
                to="create"
                className="bg-primary hover:bg-[#2d4369] px-2 sm:px-4 py-2 rounded-md text-sm sm:text-base text-white font-semibold"

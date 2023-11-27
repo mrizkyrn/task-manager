@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-
+import PropTypes from 'prop-types';
 import { XMarkIcon } from './Icons';
 
 const NoteInput = ({ index, form, setForm }) => {
@@ -30,6 +29,12 @@ const NoteInput = ({ index, form, setForm }) => {
          </button>
       </li>
    );
+};
+
+NoteInput.propTypes = {
+   index: PropTypes.number.isRequired,
+   form: PropTypes.object.isRequired,
+   setForm: PropTypes.func.isRequired,
 };
 
 export default NoteInput;

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import MenuButton from './MenuButton';
-import DialogAlert from './DialogAlert';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
 import { CheckIcon } from './Icons';
+import MenuButton from './MenuButton';
+import DialogAlert from './DialogAlert';
+
 
 const TaskCard = ({ task, setTasks }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -46,7 +46,6 @@ const TaskCard = ({ task, setTasks }) => {
          const data = await res.json();
 
          if (!data.success) {
-            console.log(data.message);
             toast.error('Something went wrong. Please try again later.', {
                theme: 'colored',
             });
@@ -55,7 +54,9 @@ const TaskCard = ({ task, setTasks }) => {
 
          setTasks((prev) => prev.map((task) => (task._id === id ? { ...task, completed: value } : task)));
       } catch (err) {
-         console.log(err);
+         toast.error('Something went wrong. Please try again later.', {
+            theme: 'colored',
+         });
       }
    };
 
@@ -101,21 +102,6 @@ const TaskCard = ({ task, setTasks }) => {
             isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'
          }`}
       >
-         <ToastContainer />
-         {task.completed && (
-            <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
-               <CheckIcon className="w-5 h-5 md:w-10 md:h-10 text-light" />
-            </div>
-         )}
-         {isAlertOpen && (
-            <DialogAlert
-               message={`Are you sure you want to delete "${task.title}"?`}
-               actionText="Delete"
-               onCancel={() => setIsAlertOpen(false)}
-               onAction={() => handleDelete(task._id)}
-            />
-         )}
-
          <div className="w-full flex justify-between px-5 py-4">
             <div
                onClick={() => handleView(task)}
@@ -124,7 +110,7 @@ const TaskCard = ({ task, setTasks }) => {
                onMouseLeave={() => setIsHovered(false)}
             >
                <h1 className="w-10/12 text-xl md:text-2xl line-clamp-1 font-bold text-gray-200">{task.title}</h1>
-               <p className="text-sm md:text-base leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
+               <p className="text-sm md:text-base leading-6 line-clamp-1 text-gray-300">{task.description}</p>
                <div className="flex justify-between items-center">
                   <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
                   <p className="text-sm text-gray-400 text-right">{dueDate}</p>
@@ -139,6 +125,23 @@ const TaskCard = ({ task, setTasks }) => {
                />
             </div>
          </div>
+
+         <ToastContainer />
+
+         {task.completed && (
+            <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
+               <CheckIcon className="w-5 h-5 md:w-10 md:h-10 text-light" />
+            </div>
+         )}
+
+         {isAlertOpen && (
+            <DialogAlert
+               message={`Are you sure you want to delete "${task.title}"?`}
+               actionText="Delete"
+               onCancel={() => setIsAlertOpen(false)}
+               onAction={() => handleDelete(task._id)}
+            />
+         )}
       </div>
    );
 };

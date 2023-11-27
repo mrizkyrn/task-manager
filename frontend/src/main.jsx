@@ -14,6 +14,8 @@ import CreateTask from './pages/CreateTask.jsx';
 import EditTask from './pages/EditTask.jsx';
 import DetailTask from './pages/DetailTask.jsx';
 
+import 'react-toastify/dist/ReactToastify.min.css';
+
 const router = createBrowserRouter([
    {
       element: <Layout />,

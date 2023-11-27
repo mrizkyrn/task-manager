@@ -13,6 +13,7 @@ const MenuButton = ({ onCompleted, onEdit, onDelete, isCompleted }) => {
 
    useEffect(() => {
       const handleOutsideClick = (event) => {
+         // Close menu if clicked outside menu and button
          if (
             menuRef.current &&
             !menuRef.current.contains(event.target) &&
@@ -37,6 +38,7 @@ const MenuButton = ({ onCompleted, onEdit, onDelete, isCompleted }) => {
          <button ref={buttonRef} aria-label="kebab-menu" onClick={handleClickButton}>
             <KebabMenuIcon className={`w-5 h-5 ${isMenuOpen ? 'text-gray-500' : 'text-gray-200'}`} />
          </button>
+
          {isMenuOpen && (
             <div ref={menuRef} className="absolute -top-2 right-10 w-48 bg-dark rounded-md shadow-md">
                <button

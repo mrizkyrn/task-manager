@@ -29,7 +29,6 @@ const SignIn = () => {
          });
 
          const data = await response.json();
-         console.log(data);
 
          if (!data.success) {
             dispatch(signinFailure(data.message));
@@ -50,10 +49,9 @@ const SignIn = () => {
          <h1 className="text-3xl font-bold text-light">Sign In</h1>
          <form
             className="w-64 sm:w-72 flex flex-col justify-start items-center gap-5"
-            action=""
-            method="post"
             onSubmit={handleSubmit}
          >
+            {/* Username */}
             <input
                className="w-full px-5 py-3 rounded-md border-gray-300 bg-[#212e42] text-gray-200"
                type="text"
@@ -63,6 +61,7 @@ const SignIn = () => {
                autoComplete="off"
                onChange={handleChange}
             />
+            {/* Password */}
             <input
                className="w-full px-5 py-3 rounded-md border-gray-300 bg-[#212e42] text-gray-200"
                type="password"
@@ -71,10 +70,12 @@ const SignIn = () => {
                placeholder="Password"
                onChange={handleChange}
             />
+            {/* Submit */}
             <Button className="w-full" type="submit" disabled={loading}>
                {loading ? 'Loading...' : 'Sign In'}
             </Button>
          </form>
+         
          <div className="mt-5">
             <span className="text-light">Don&apos;t have an account? </span>
             <Link className="text-sky-600 font-bold" to="/signup">

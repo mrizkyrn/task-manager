@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import Container from '../component/Container';
-import BackButton from '../component/BackButton';
+import HeaderTitle from '../component/HeaderTitle';
+import TaskInfo from '../component/TaskInfo';
 
 const DetailTask = () => {
    const location = useLocation();
@@ -10,41 +11,37 @@ const DetailTask = () => {
       month: 'long',
       day: 'numeric',
    });
-   console.log(task);
 
    return (
       <Container>
-         <div className="flex items-start gap-2">
-            <BackButton />
-            <h1 className="inline text-2xl sm:text-3xl font-semibold text-gray-200 ml-2">{task.title}</h1>
-         </div>
-         <div className="mt-10 leading-7">
-            <p className="text-[#a7acb5]">{task.description}</p>
-            {task.notes.length > 0 && (
-               <>
-                  <h2 className="text-xl font-semibold text-gray-200 mt-7">Additional Notes</h2>
-                  {task.notes.map((note, index) => (
-                     <div key={index} className="flex items-start gap-3 justify-start mt-2">
-                        <span className="text-light">&#9900;</span>
-                        <p className="text-[#a7acb5]">{note}</p>
-                     </div>
-                  ))}
-               </>
-            )}
+         <HeaderTitle title={task.title} />
 
-            <p className="text-[#a7acb5] mt-2">Priority: {task.priority}</p>
-            <p className="text-[#a7acb5] mt-2">Due: {dueDate} {task.dueTime && task.dueTime}</p>
-            
-            {/* created by */}
-            <div className="flex items-center gap-3 mt-10">
-               <img
-                  className="object-cover w-10 h-10 rounded-full"
-                  src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
-                  alt="avatar"
-               />
-               <div>
-                  <p className="text-[#a7acb5]">{task.creator ? task.creator.username : 'Anonymous'}</p>
-               </div>
+         <div className="flex flex-col sm:flex-row justify-between items-start gap-10 mt-10 leading-7">
+            <div className='w-full'>
+               <p className="text-[#a7acb5] whitespace-pre-line">
+                  {task.description}
+               </p>
+
+
+               {task.notes.length > 0 && (
+                  <>
+                     <h2 className="text-xl font-semibold text-gray-200 mt-7">Additional Notes</h2>
+                     {task.notes.map((note, index) => (
+                        <div key={index} className="flex items-start gap-3 justify-start mt-2">
+                           <span className="text-light">&#9900;</span>
+                           <p className="text-[#a7acb5]">{note}</p>
+                        </div>
+                     ))}
+                  </>
+               )}
+
+               <p className="text-[#a7acb5] mt-2">Priority: {task.priority}</p>
+               <p className="text-[#a7acb5] mt-2">
+                  Due: {dueDate} {task.dueTime && task.dueTime}
+               </p>
+            </div>
+            <div className='w-full sm:basis-2/3 md:max-w-sm'>
+               <TaskInfo task={task} />
             </div>
          </div>
       </Container>

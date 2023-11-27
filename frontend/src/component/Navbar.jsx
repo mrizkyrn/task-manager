@@ -1,8 +1,8 @@
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signoutStart, signoutSuccess, signoutFailure } from '../redux/user/userSlice';
-import { NavLink } from 'react-router-dom';
 import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
-import { useState } from 'react';
 import DialogAlert from './DialogAlert';
 import UserProfile from './UserProfile';
 
@@ -50,7 +50,6 @@ const Navbar = () => {
          const data = await res.json();
 
          if (!data.success) {
-            console.log(data.message);
             dispatch(signoutFailure('Something went wrong. Please try again later.'));
             return;
          }
@@ -64,18 +63,6 @@ const Navbar = () => {
 
    return (
       <>
-         {isAlertOpen && (
-            <DialogAlert
-               message="Are you sure you want to logout?"
-               actionText="Logout"
-               onCancel={() => setIsAlertOpen(false)}
-               onAction={handleLogout}
-            />
-         )}
-         {isProfileOpen && (
-            <UserProfile onClose={() => setIsProfileOpen(false)} onAlertLogout={() => setIsAlertOpen(true)} onLogout={handleLogout} />
-         )}
-
          {/* Desktop Navbar */}
          <div className="w-20 lg:w-64 fixed flex-shrink-0 hidden sm:flex flex-col h-screen py-10 px-4 bg-dark border-r border-gray-700 duration-200 ease-in-out">
             <div className="flex items-start mt-6 -mx-2">
@@ -145,6 +132,23 @@ const Navbar = () => {
                />
             </div>
          </div>
+
+         {isAlertOpen && (
+            <DialogAlert
+               message="Are you sure you want to logout?"
+               actionText="Logout"
+               onCancel={() => setIsAlertOpen(false)}
+               onAction={handleLogout}
+            />
+         )}
+
+         {isProfileOpen && (
+            <UserProfile
+               onClose={() => setIsProfileOpen(false)}
+               onAlertLogout={() => setIsAlertOpen(true)}
+               onLogout={handleLogout}
+            />
+         )}
       </>
    );
 };

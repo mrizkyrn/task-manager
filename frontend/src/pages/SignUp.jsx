@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signupStart, signupSuccess, signupFailure } from '../redux/user/userSlice';
 import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-
-import 'react-toastify/dist/ReactToastify.min.css';
 import Button from '../component/Button';
+
 
 const SignUp = () => {
    const [formData, setFormData] = useState({
@@ -111,12 +110,12 @@ const SignUp = () => {
    return (
       <div className="w-full h-screen flex flex-col justify-center items-center gap-10 px-7 bg-semiDark">
          <h1 className="text-3xl font-bold text-light">Sign Up</h1>
+
          <form
             className="w-64 sm:w-72 flex flex-col justify-start items-center gap-5"
-            action=""
-            method="post"
             onSubmit={handleSubmit}
          >
+            {/* Username */}
             <input
                className="w-full px-5 py-3 rounded-md border-gray-300 bg-[#212e42] text-gray-200"
                type="text"
@@ -127,6 +126,7 @@ const SignUp = () => {
                autoComplete="off"
                onChange={handleChange}
             />
+            {/* Password */}
             <input
                className="w-full px-5 py-3 rounded-md border-gray-300 bg-[#212e42] text-gray-200"
                type="password"
@@ -136,6 +136,7 @@ const SignUp = () => {
                placeholder="Password"
                onChange={handleChange}
             />
+            {/* Confirm Password */}
             <input
                className="w-full px-5 py-3 rounded-md border-gray-300 bg-[#212e42] text-gray-200"
                type="password"
@@ -145,10 +146,12 @@ const SignUp = () => {
                placeholder="Confirm Password"
                onChange={handleChange}
             />
+            {/* Submit */}
             <Button className="w-full" type="submit" disabled={loading}>
                {loading ? 'Loading...' : 'Sign Up'}
             </Button>
          </form>
+         
          <div className="mt-5">
             <span className="text-light">Already have an account? </span>
             <Link className="text-sky-400 font-bold" to="/signin">
@@ -158,7 +161,7 @@ const SignUp = () => {
 
          {error && <p className="text-red-700 mt-5 font-medium text-center">{error}</p>}
 
-         <ToastContainer />
+         <ToastContainer /> 
       </div>
    );
 };

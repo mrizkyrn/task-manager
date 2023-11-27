@@ -6,10 +6,12 @@ import Button from './Button';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { XMarkIcon } from './Icons';
+import { LogOutIcon, XMarkIcon } from './Icons';
+import DialogAlert from './DialogAlert';
 
-const UserProfile = ({ onClose, onLogout }) => {
+const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
    const { currentUser } = useSelector((state) => state.user);
+   const [isAlertOpen, setIsAlertOpen] = useState(false);
    const [newUsername, setNewUsername] = useState('');
    const [hasChanged, setHasChanged] = useState(false);
    const dispatch = useDispatch();
@@ -56,9 +58,39 @@ const UserProfile = ({ onClose, onLogout }) => {
       }
    };
 
+   const handleDeleteAccount = async () => {
+      try {
+         const res = await fetch(`/api/users/${currentUser._id}`, {
+            method: 'DELETE',
+            credentials: 'include',
+         });
+
+         const data = await res.json();
+
+         if (!data.success) {
+            console.log(data.message);
+            return;
+         }
+
+         onLogout();
+      } catch (err) {
+         console.log(err);
+      }
+   };
+
    return (
-      <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-30 z-50">
          <ToastContainer />
+         {
+            isAlertOpen && (
+               <DialogAlert
+                  message="Are you sure you want to delete your account?"
+                  actionText="Delete"
+                  onCancel={() => setIsAlertOpen(false)}
+                  onAction={handleDeleteAccount}
+               />
+            )
+         }
          {currentUser && (
             <div className="relative w-full flex flex-col justify-center items-center max-w-md bg-dark rounded-md shadow-lg py-8 px-5">
                <div className="absolute top-6 right-3">
@@ -72,23 +104,30 @@ const UserProfile = ({ onClose, onLogout }) => {
                <div className="flex items-center gap-3">
                   <input
                      type="text"
-                     autoComplete='off'
+                     autoComplete="off"
                      className="bg-dark text-light text-center w-full rounded-md mt-4"
                      defaultValue={currentUser.username}
                      onChange={handleUsernameChange}
                   />
                </div>
+               <div className="w-full flex justify-center items-center gap-5 mt-16">
+                  <Button
+                     className="w-full text-sm sm:text-base disabled:bg-gray-700 disabled:hover:bg-gray-700"
+                     onClick={handleSaveChanges}
+                     disabled={!hasChanged}
+                  >
+                     Save Changes
+                  </Button>
 
-               <Button
-                  className="w-full disabled:bg-gray-700 disabled:hover:bg-gray-700 mt-16"
-                  onClick={handleSaveChanges}
-                  disabled={!hasChanged}
-               >
-                  Save Changes
-               </Button>
+                  <Button className="w-full text-sm sm:text-base flex justify-center items-center" onClick={onAlertLogout}>
+                     <LogOutIcon className="w-5 h-5 mr-3" />
+                     Logout
+                  </Button>
+               </div>
 
-               <Button className="w-full mt-5" onClick={onLogout}>
-                  Logout
+               {/* Delete user button */}
+               <Button className="w-full text-sm sm:text-base flex justify-center items-center mt-5 !bg-red-800" onClick={() => setIsAlertOpen(true)}>
+                  Delete Account
                </Button>
             </div>
          )}
@@ -98,6 +137,7 @@ const UserProfile = ({ onClose, onLogout }) => {
 
 UserProfile.propTypes = {
    onClose: PropTypes.func.isRequired,
+   onAlertLogout: PropTypes.func.isRequired,
    onLogout: PropTypes.func.isRequired,
 };
 

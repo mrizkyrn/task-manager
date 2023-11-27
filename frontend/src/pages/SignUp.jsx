@@ -156,7 +156,7 @@ const SignUp = () => {
             </Link>
          </div>
 
-         {error && <p className="text-red-700 mt-5 font-medium">{error}</p>}
+         {error && <p className="text-red-700 mt-5 font-medium text-center">{error}</p>}
 
          <ToastContainer />
       </div>

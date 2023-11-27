@@ -17,6 +17,7 @@ const EditTask = () => {
       description: task.description,
       notes: task.notes,
       priority: task.priority,
+      completed: task.completed,
       dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
       dueTime: task.dueTime ? task.dueTime : '',
    };

@@ -14,9 +14,9 @@ const DetailTask = () => {
 
    return (
       <Container>
-         <div>
+         <div className="flex items-start gap-2">
             <BackButton />
-            <h1 className="inline text-3xl font-semibold text-gray-200 ml-2">{task.title}</h1>
+            <h1 className="inline text-2xl sm:text-3xl font-semibold text-gray-200 ml-2">{task.title}</h1>
          </div>
          <div className="mt-10 leading-7">
             <p className="text-[#a7acb5]">{task.description}</p>

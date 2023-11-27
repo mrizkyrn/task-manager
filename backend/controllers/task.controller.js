@@ -59,7 +59,6 @@ const updateTask = async (req, res, next) => {
    const { id } = req.params;
    const { title, description, notes, priority, dueDate, dueTime, completed } = req.body;
    const { id: userId } = req.user;
-   console.log(id, userId);
 
    try {
       const task = await Task.findById(id);

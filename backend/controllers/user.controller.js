@@ -1,4 +1,5 @@
 const User = require('../models/user.model.js');
+const Task = require('../models/task.model.js');
 const errorHandler = require('../utils/errorHandler');
 
 const editUsername = async (req, res, next) => {
@@ -28,6 +29,24 @@ const editUsername = async (req, res, next) => {
    }
 }
 
+const deleteUser = async (req, res, next) => {
+   const { id } = req.params;
+
+   try {
+      // Check if user is authorized
+      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
+
+      // Delete user and tasks
+      await User.findByIdAndDelete(id);
+      await Task.deleteMany({ creator: id });
+
+      res.status(200).send({ success: true, message: 'User deleted successfully' });
+   } catch (error) {
+      next(error);
+   }
+}
+
 module.exports = {
    editUsername,
+   deleteUser,
 };

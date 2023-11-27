@@ -25,11 +25,13 @@ const TaskCard = ({ task, setTasks }) => {
       }
    };
 
-   const createdAt = new Date(task.createdAt).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-   });
+   const dueDate =
+      task.dueDate &&
+      new Date(task.dueDate).toLocaleDateString('en-US', {
+         year: 'numeric',
+         month: 'long',
+         day: 'numeric',
+      });
 
    const handleMarkAsCompleted = async (id, value) => {
       try {
@@ -94,40 +96,47 @@ const TaskCard = ({ task, setTasks }) => {
    };
 
    return (
-      <div className={`w-full h-32 flex justify-between rounded-md ${isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'}`}>
+      <div
+         className={`relative w-full h-32 flex justify-between rounded-md ${
+            isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'
+         }`}
+      >
          <ToastContainer />
          {task.completed && (
             <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
                <CheckIcon className="w-5 h-5 md:w-10 md:h-10 text-light" />
             </div>
          )}
+         {isAlertOpen && (
+            <DialogAlert
+               message={`Are you sure you want to delete "${task.title}"?`}
+               actionText="Delete"
+               onCancel={() => setIsAlertOpen(false)}
+               onAction={() => handleDelete(task._id)}
+            />
+         )}
+
          <div className="w-full flex justify-between px-5 py-4">
-            {isAlertOpen && (
-               <DialogAlert
-                  message={`Are you sure you want to delete "${task.title}"?`}
-                  actionText="Delete"
-                  onCancel={() => setIsAlertOpen(false)}
-                  onAction={() => handleDelete(task._id)}
-               />
-            )}
             <div
                onClick={() => handleView(task)}
                className="basis-full flex flex-col justify-between cursor-pointer"
                onMouseEnter={() => setIsHovered(true)}
                onMouseLeave={() => setIsHovered(false)}
             >
-               <h1 className="text-xl md:text-2xl line-clamp-1 font-bold text-gray-200">{task.title}</h1>
+               <h1 className="w-10/12 text-xl md:text-2xl line-clamp-1 font-bold text-gray-200">{task.title}</h1>
                <p className="text-sm md:text-base leading-6 mt-1 line-clamp-1 text-gray-300">{task.description}</p>
-               <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
+               <div className="flex justify-between items-center">
+                  <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
+                  <p className="text-sm text-gray-400 text-right">{dueDate}</p>
+               </div>
             </div>
-            <div className="text-sm sm:text-base basis-44 flex flex-col justify-between items-end">
+            <div className="absolute top-4 right-3 text-sm sm:text-base basis-12 sm:basis-44 flex flex-col justify-between items-end">
                <MenuButton
                   onCompleted={() => handleMarkAsCompleted(task._id, !task.completed)}
                   onEdit={() => handleEdit(task)}
                   onDelete={() => setIsAlertOpen(true)}
                   isCompleted={task.completed}
                />
-               <p className="hidden sm:block text-sm text-gray-400 text-right">{createdAt}</p>
             </div>
          </div>
       </div>
@@ -142,6 +151,7 @@ TaskCard.propTypes = {
       description: PropTypes.string.isRequired,
       createdAt: PropTypes.string.isRequired,
       completed: PropTypes.bool.isRequired,
+      dueDate: PropTypes.string,
    }).isRequired,
    setTasks: PropTypes.func.isRequired,
 };

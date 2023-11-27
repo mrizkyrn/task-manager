@@ -30,7 +30,6 @@ const CreateTask = () => {
       if (!validateForm()) return;
       
       const notes = form.notes.filter((note) => note !== '');
-      console.log({ ...form, notes });
 
       try {
          const res = await fetch('/api/tasks', {
@@ -49,7 +48,6 @@ const CreateTask = () => {
          }
 
          onSubmitSuccess();
-         console.log(data.data);
       } catch (err) {
          onSubmitFailure('Something went wrong. Please try again later.');
          console.log(err);
@@ -87,9 +85,9 @@ const CreateTask = () => {
 
    return (
       <Container>
-         <div>
+         <div className='flex items-start gap-2'>
             <BackButton />
-            <h1 className="inline text-3xl font-semibold text-gray-200 ml-2">Create Task</h1>
+            <h1 className="inline text-2xl sm:text-3xl font-semibold text-gray-200 ml-2">Create Task</h1>
          </div>
 
          <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit}>

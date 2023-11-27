@@ -73,7 +73,7 @@ const Navbar = () => {
             />
          )}
          {isProfileOpen && (
-            <UserProfile onClose={() => setIsProfileOpen(false)} onLogout={() => setIsAlertOpen(true)} />
+            <UserProfile onClose={() => setIsProfileOpen(false)} onAlertLogout={() => setIsAlertOpen(true)} onLogout={handleLogout} />
          )}
 
          {/* Desktop Navbar */}
@@ -81,7 +81,7 @@ const Navbar = () => {
             <div className="flex items-start mt-6 -mx-2">
                <img
                   onClick={handleProfileClick}
-                  className="object-cover mx-2 rounded-full duration-300 ease-in-out w-12 h-12"
+                  className="object-cover mx-2 rounded-full duration-300 ease-in-out w-12 h-12 cursor-pointer"
                   src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
                   alt="avatar"
                />
@@ -138,7 +138,7 @@ const Navbar = () => {
 
             <div className="relative flex justify-center py-3 w-full">
                <img
-                  className="object-cover w-6 h-6 rounded-full"
+                  className="object-cover w-6 h-6 rounded-full cursor-pointer"
                   src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
                   alt="avatar"
                   onClick={handleProfileClick}

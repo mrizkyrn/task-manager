@@ -102,6 +102,12 @@ const TaskCard = ({ task, setTasks }) => {
             isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'
          }`}
       >
+         {task.completed && (
+            <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
+               <CheckIcon className="w-5 h-5 md:w-10 md:h-10 text-light" />
+            </div>
+         )}
+         
          <div className="w-full flex justify-between px-5 py-4">
             <div
                onClick={() => handleView(task)}
@@ -125,15 +131,11 @@ const TaskCard = ({ task, setTasks }) => {
                />
             </div>
          </div>
-
+         
+         {/* Show toast */}
          <ToastContainer />
-
-         {task.completed && (
-            <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
-               <CheckIcon className="w-5 h-5 md:w-10 md:h-10 text-light" />
-            </div>
-         )}
-
+         
+         {/* Show alert when deleting */}
          {isAlertOpen && (
             <DialogAlert
                message={`Are you sure you want to delete "${task.title}"?`}

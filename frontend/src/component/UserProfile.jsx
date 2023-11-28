@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { editUsernameStart, editUsernameSuccess, editUsernameFailure } from '../redux/user/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import Button from './Button';
-
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { editUsernameStart, editUsernameSuccess, editUsernameFailure } from '../redux/user/userSlice';
 import { LogOutIcon, XMarkIcon } from './Icons';
+import Button from './Button';
 import DialogAlert from './DialogAlert';
 
 const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
@@ -79,20 +77,9 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
    };
 
    return (
-      <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-30 z-50">
-         <ToastContainer />
-         {
-            isAlertOpen && (
-               <DialogAlert
-                  message="Are you sure you want to delete your account?"
-                  actionText="Delete"
-                  onCancel={() => setIsAlertOpen(false)}
-                  onAction={handleDeleteAccount}
-               />
-            )
-         }
+      <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
          {currentUser && (
-            <div className="relative w-full flex flex-col justify-center items-center max-w-md bg-dark rounded-md shadow-lg py-8 px-5">
+            <div className="relative w-full flex flex-col justify-center items-center max-w-md bg-semiDark rounded-md shadow-lg py-8 px-5">
                <div className="absolute top-6 right-3">
                   <XMarkIcon className="w-7 h-7 text-light cursor-pointer" onClick={onClose} />
                </div>
@@ -105,7 +92,7 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
                   <input
                      type="text"
                      autoComplete="off"
-                     className="bg-dark text-light text-center w-full rounded-md mt-4"
+                     className="bg-semiDark text-light md:text-lg font-semibold text-center w-full rounded-md mt-4"
                      defaultValue={currentUser.username}
                      onChange={handleUsernameChange}
                   />
@@ -119,17 +106,35 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
                      Save Changes
                   </Button>
 
-                  <Button className="w-full text-sm sm:text-base flex justify-center items-center" onClick={onAlertLogout}>
+                  <Button
+                     className="w-full text-sm sm:text-base flex justify-center items-center"
+                     onClick={onAlertLogout}
+                  >
                      <LogOutIcon className="w-5 h-5 mr-3" />
                      Logout
                   </Button>
                </div>
 
-               {/* Delete user button */}
-               <Button className="w-full text-sm sm:text-base flex justify-center items-center mt-5 !bg-red-800" onClick={() => setIsAlertOpen(true)}>
+               <Button
+                  className="w-full text-sm sm:text-base flex justify-center items-center mt-5 !bg-red-800"
+                  onClick={() => setIsAlertOpen(true)}
+               >
                   Delete Account
                </Button>
             </div>
+         )}
+
+         {/* Show toast when username is updated */}
+         <ToastContainer />
+
+         {/* Show alert when delete account */}
+         {isAlertOpen && (
+            <DialogAlert
+               message="Are you sure you want to delete your account?"
+               actionText="Delete"
+               onCancel={() => setIsAlertOpen(false)}
+               onAction={handleDeleteAccount}
+            />
          )}
       </div>
    );

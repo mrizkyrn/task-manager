@@ -133,6 +133,7 @@ const Navbar = () => {
             </div>
          </div>
 
+         {/* Show alet when logout */}
          {isAlertOpen && (
             <DialogAlert
                message="Are you sure you want to logout?"
@@ -142,6 +143,7 @@ const Navbar = () => {
             />
          )}
 
+         {/* Show user profile */}
          {isProfileOpen && (
             <UserProfile
                onClose={() => setIsProfileOpen(false)}

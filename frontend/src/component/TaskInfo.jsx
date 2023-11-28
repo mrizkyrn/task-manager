@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
-import { Tooltip } from 'react-tooltip';
 import { PlusIcon } from './Icons';
 import { useEffect, useState } from 'react';
+import User from './User';
 
 const TaskInfo = ({ task }) => {
    const [users, setUsers] = useState([]);
-   console.log(users);
 
    useEffect(() => {
       if (task.users.length <= 0) return;
@@ -42,7 +41,7 @@ const TaskInfo = ({ task }) => {
             headers: {
                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: '65648ff1d6551f69a7c19ea7' }),
+            body: JSON.stringify({ userId: '6564983b0e18693709dfde5a' }),
          });
 
          const data = await res.json();
@@ -53,11 +52,36 @@ const TaskInfo = ({ task }) => {
             return;
          }
 
-         setUsers([...users, data.data]);
+         setUsers((prev) => [...prev, data.data]);
       } catch (error) {
          console.log(error);
       }
-   }
+   };
+
+   const handleRemoveUser = async (userId) => {
+      try {
+         const res = await fetch(`/api/tasks/${task._id}/users/`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+               'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId }),
+         });
+
+         const data = await res.json();
+         console.log(data);
+
+         if (!data.success) {
+            console.log(data.message);
+            return;
+         }
+
+         setUsers((prev) => prev.filter((user) => user._id !== userId));
+      } catch (error) {
+         console.log(error);
+      }
+   };
 
    const formatDate = (date) => {
       const d = new Date(date);
@@ -75,28 +99,15 @@ const TaskInfo = ({ task }) => {
       <div className="w-full flex flex-col justify-start items-start gap-5 p-5 sm:p-7 rounded-xl bg-dark/50">
          <div>
             <p className="font-semibold text-gray-300">Created by</p>
-            <img
-               className="object-cover w-12 h-12 rounded-full mt-3"
-               src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
-               alt="avatar"
-               data-tooltip-id={`avatar-${task.creator._id}`}
-               data-tooltip-content={task.creator.username || 'Unknown'}
-            />
+            <User user={task.creator} onRemove={handleRemoveUser} />
          </div>
 
          <div>
             <p className="font-semibold text-gray-300">Assigned to</p>
-            <div className="flex items-center gap-3 mt-3">
+            <div className="flex flex-wrap items-center gap-3 mt-3">
                {users &&
                   users.map((user) => (
-                     <img
-                        key={user._id}
-                        className="object-cover w-12 h-12 rounded-full"
-                        src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
-                        alt="avatar"
-                        data-tooltip-id={`avatar-${user._id}`}
-                        data-tooltip-content={user.username || 'Unknown'}
-                     />
+                     <User key={user._id} user={user} onRemove={handleRemoveUser} />
                   ))}
                <button
                   onClick={handleAddUser}
@@ -116,13 +127,6 @@ const TaskInfo = ({ task }) => {
             <p className="font-semibold text-gray-300">Updated at</p>
             <p className="mt-2 text-gray-400">{formatDate(task.updatedAt)}</p>
          </div>
-
-         <Tooltip id={`avatar-${task.creator._id}`} opacity={1} place="top" style={{ backgroundColor: '#344560' }} />
-         {
-            users.map((user) => (
-               <Tooltip key={user._id} id={`avatar-${user._id}`} opacity={1} place="top" style={{ backgroundColor: '#344560' }} />
-            ))
-         }
       </div>
    );
 };

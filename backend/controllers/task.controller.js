@@ -7,7 +7,8 @@ const getTasks = async (req, res, next) => {
 
    try {
       // find all tasks that have the user's id in the users array
-      const tasks = await Task.find({ users: id }).populate('creator', 'username');
+      // populate creator field without password
+      const tasks = await Task.find({ users: id }).populate('creator', '-password');
 
       // Check if user has any tasks
       if (tasks.length === 0) return next(errorHandler(404, 'No tasks found'));
@@ -143,13 +144,16 @@ const getAllUsers = async (req, res, next) => {
       // Find all users id that are in the users array
       const usersId = await Task.findById(id, 'users');
 
-      // Find all username of the users that have the id in the usersId array 
-      const users = await User.find({ _id: { $in: usersId.users } }, 'username');
+      // Find all users that have the id in the usersId array 
+      const users = await User.find({ _id: { $in: usersId.users } });
 
       // Sort users by usersId array
       users.sort((a, b) => {
          return usersId.users.indexOf(a._id) - usersId.users.indexOf(b._id);
       });
+
+      // Remove password from users
+      const { password: pwd, ...data } = users;
 
       res.status(200).send({ success: true, message: 'Users fetched successfully', data: users });
    } catch (error) {

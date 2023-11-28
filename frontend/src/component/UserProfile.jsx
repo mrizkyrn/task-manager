@@ -2,21 +2,30 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { editUsernameStart, editUsernameSuccess, editUsernameFailure } from '../redux/user/userSlice';
+import { editUserStart, editUserSuccess, editUserFailure } from '../redux/user/userSlice';
 import { LogOutIcon, XMarkIcon } from './Icons';
 import Button from './Button';
 import DialogAlert from './DialogAlert';
+import SelectAvatar from './SelectAvatar';
 
 const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
    const { currentUser } = useSelector((state) => state.user);
    const [isAlertOpen, setIsAlertOpen] = useState(false);
-   const [newUsername, setNewUsername] = useState('');
+   const [isSelectAvatarOpen, setIsSelectAvatarOpen] = useState(false);
+   const [newUsername, setNewUsername] = useState(currentUser.username);
+   const [newAvatar, setNewAvatar] = useState(currentUser.avatar);
    const [hasChanged, setHasChanged] = useState(false);
    const dispatch = useDispatch();
 
    const handleUsernameChange = (e) => {
       setNewUsername(e.target.value);
       setHasChanged(e.target.value !== currentUser.username);
+   };
+
+   const handleAvatarChange = (avatar) => {
+      setNewAvatar(avatar);
+      setHasChanged(avatar !== currentUser.avatar);
+      setIsSelectAvatarOpen(false);
    };
 
    const handleSaveChanges = async () => {
@@ -27,8 +36,12 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
          return;
       }
 
+      const payload = {};
+      if (newUsername !== currentUser.username) payload.username = newUsername;
+      if (newAvatar !== currentUser.avatar) payload.avatar = newAvatar;
+
       try {
-         dispatch(editUsernameStart());
+         dispatch(editUserStart());
 
          const res = await fetch(`/api/users/${currentUser._id}`, {
             method: 'PATCH',
@@ -36,17 +49,17 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
             headers: {
                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username: newUsername }),
+            body: JSON.stringify(payload),
          });
 
          const data = await res.json();
 
          if (!data.success) {
             console.log(data.message);
-            dispatch(editUsernameFailure(data.message));
+            dispatch(editUserFailure(data.message));
             return;
          }
-         dispatch(editUsernameSuccess(data.user.username));
+         dispatch(editUserSuccess({ username: data.user.username, avatar: data.user.avatar }));
          toast.success('Username updated successfully.', {
             theme: 'colored',
          });
@@ -85,8 +98,9 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
                </div>
                <img
                   className="object-cover w-20 h-20 md:w-24 md:h-24 rounded-full"
-                  src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
+                  src={`/avatars/${newAvatar}.jpg`}
                   alt="avatar"
+                  onClick={() => setIsSelectAvatarOpen(true)}
                />
                <div className="flex items-center gap-3">
                   <input
@@ -136,6 +150,9 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
                onAction={handleDeleteAccount}
             />
          )}
+
+         {/* Show select avatar */}
+         {isSelectAvatarOpen && <SelectAvatar onClose={() => setIsSelectAvatarOpen(false)} onSelected={handleAvatarChange} />}
       </div>
    );
 };

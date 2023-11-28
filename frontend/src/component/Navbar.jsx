@@ -34,6 +34,8 @@ const Navbar = () => {
    const { currentUser, loading } = useSelector((state) => state.user);
    const [isProfileOpen, setIsProfileOpen] = useState(false);
    const [isAlertOpen, setIsAlertOpen] = useState(false);
+   const username = currentUser && currentUser.username;
+   const avatar = currentUser && currentUser.avatar;
 
    const handleProfileClick = () => {
       setIsProfileOpen(true);
@@ -69,11 +71,11 @@ const Navbar = () => {
                <img
                   onClick={handleProfileClick}
                   className="object-cover mx-2 rounded-full duration-300 ease-in-out w-12 h-12 cursor-pointer"
-                  src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
+                  src={`/avatars/${avatar}.jpg`}
                   alt="avatar"
                />
                <h4 className="hidden lg:block mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200 hover:underline">
-                  {currentUser && currentUser.username}
+                  {username}
                </h4>
             </div>
             <div className="flex flex-col justify-between flex-1 mt-6">
@@ -125,8 +127,8 @@ const Navbar = () => {
 
             <div className="relative flex justify-center py-3 w-full">
                <img
-                  className="object-cover w-6 h-6 rounded-full cursor-pointer"
-                  src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
+                  className="object-cover w-8 h-8 rounded-full cursor-pointer"
+                  src={`/avatars/${avatar}.jpg`}
                   alt="avatar"
                   onClick={handleProfileClick}
                />
@@ -146,6 +148,7 @@ const Navbar = () => {
          {/* Show user profile */}
          {isProfileOpen && (
             <UserProfile
+               user={currentUser}
                onClose={() => setIsProfileOpen(false)}
                onAlertLogout={() => setIsAlertOpen(true)}
                onLogout={handleLogout}

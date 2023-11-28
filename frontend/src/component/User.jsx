@@ -9,8 +9,8 @@ const User = ({ user, onRemove }) => {
    return (
       <>
          <img
-            className="object-cover w-12 h-12 rounded-full mt-3"
-            src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
+            className="object-cover w-12 h-12 rounded-full cursor-pointer hover:opacity-80"
+            src={`/avatars/${user.avatar}.jpg`}
             alt="avatar"
             data-tooltip-id={`avatar-${user._id}`}
             data-tooltip-content={user.username || 'Unknown'}
@@ -29,6 +29,7 @@ User.propTypes = {
    user: PropTypes.shape({
       _id: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
+      avatar: PropTypes.string.isRequired,
    }).isRequired,
    onRemove: PropTypes.func.isRequired,
 };

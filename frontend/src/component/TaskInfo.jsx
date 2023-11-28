@@ -7,8 +7,6 @@ const TaskInfo = ({ task }) => {
    const [users, setUsers] = useState([]);
 
    useEffect(() => {
-      if (task.users.length <= 0) return;
-
       const getUsers = async () => {
          try {
             const res = await fetch(`/api/tasks/${task._id}/users`, {
@@ -22,7 +20,6 @@ const TaskInfo = ({ task }) => {
                console.log(data.message);
                return;
             }
-            console.log(data);
 
             setUsers(data.data);
          } catch (error) {
@@ -41,11 +38,10 @@ const TaskInfo = ({ task }) => {
             headers: {
                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ userId: '6564983b0e18693709dfde5a' }),
+            body: JSON.stringify({ userId: '6565e1dc6f8eef1e0c630d22' }),
          });
 
          const data = await res.json();
-         console.log(data);
 
          if (!data.success) {
             console.log(data.message);
@@ -70,7 +66,6 @@ const TaskInfo = ({ task }) => {
          });
 
          const data = await res.json();
-         console.log(data);
 
          if (!data.success) {
             console.log(data.message);
@@ -98,17 +93,14 @@ const TaskInfo = ({ task }) => {
    return (
       <div className="w-full flex flex-col justify-start items-start gap-5 p-5 sm:p-7 rounded-xl bg-dark/50">
          <div>
-            <p className="font-semibold text-gray-300">Created by</p>
+            <p className="font-semibold text-gray-300 mb-3">Created by</p>
             <User user={task.creator} onRemove={handleRemoveUser} />
          </div>
 
          <div>
             <p className="font-semibold text-gray-300">Assigned to</p>
             <div className="flex flex-wrap items-center gap-3 mt-3">
-               {users &&
-                  users.map((user) => (
-                     <User key={user._id} user={user} onRemove={handleRemoveUser} />
-                  ))}
+               {users && users.map((user) => <User key={user._id} user={user} onRemove={handleRemoveUser} />)}
                <button
                   onClick={handleAddUser}
                   className="flex justify-center items-center w-12 h-12 bg-gray-700 rounded-full cursor-pointer hover:bg-gray-600"

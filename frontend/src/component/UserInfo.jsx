@@ -16,7 +16,7 @@ const UserInfo = ({ user, onClose, onRemove }) => {
 
             <img
                className="object-cover w-20 h-20 md:w-24 md:h-24 rounded-full"
-               src="https://avatars.githubusercontent.com/u/11138376?s=400&u=1a4b7c7d1e9a5b0a2b7d2e6d1f2b2e9f5f2e9e5f&v=4"
+               src={`/avatars/${user.avatar}.jpg`}
                alt="avatar"
             />
             <p className="mt-3 text-lg md:text-xl font-semibold text-gray-200">{user.username}</p>
@@ -46,6 +46,7 @@ UserInfo.propTypes = {
    user: PropTypes.shape({
       _id: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
+      avatar: PropTypes.string.isRequired,
    }).isRequired,
    onClose: PropTypes.func.isRequired,
    onRemove: PropTypes.func.isRequired,

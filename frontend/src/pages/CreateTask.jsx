@@ -6,14 +6,12 @@ import Button from '../component/Button';
 import NoteInput from '../component/NoteInput';
 import HeaderTitle from '../component/HeaderTitle';
 
-
 const initialForm = {
    title: '',
    description: '',
    notes: [],
    priority: 'medium',
    dueDate: '',
-   dueTime: '',
 };
 
 const CreateTask = () => {
@@ -27,9 +25,12 @@ const CreateTask = () => {
       e.preventDefault();
 
       if (!validateForm()) return;
-      
+
       // remove empty notes
       const notes = form.notes.filter((note) => note !== '');
+      
+      // convert the date to ISO format
+      form.dueDate = new Date(form.dueDate).toISOString();
 
       try {
          const res = await fetch('/api/tasks', {
@@ -86,7 +87,7 @@ const CreateTask = () => {
 
    return (
       <Container>
-         <HeaderTitle title="Create Task" /> 
+         <HeaderTitle title="Create Task" />
 
          <form className="flex flex-col gap-5 mt-10" onSubmit={handleSubmit}>
             {/* Title */}
@@ -123,18 +124,14 @@ const CreateTask = () => {
 
             {/* Additonal Notes */}
             <div className="flex flex-col gap-2">
-               <label className="text-gray-200">
-                  Additonal Notes
-               </label>
-               {
-                     form.notes.length > 0 && (
-                        <ul className="flex flex-col gap-5">
-                           {form.notes.map((note, index) => (
-                              <NoteInput key={index} index={index} form={form} setForm={setForm} />
-                           ))}
-                        </ul>
-                     )
-                  }
+               <label className="text-gray-200">Additonal Notes</label>
+               {form.notes.length > 0 && (
+                  <ul className="flex flex-col gap-5">
+                     {form.notes.map((note, index) => (
+                        <NoteInput key={index} index={index} form={form} setForm={setForm} />
+                     ))}
+                  </ul>
+               )}
                <button
                   type="button"
                   className="flex bg-[#2b3d56] p-3 rounded-md text-gray-200 mx-auto mt-3"
@@ -169,7 +166,7 @@ const CreateTask = () => {
                   Due Date
                </label>
                <input
-                  type="date"
+                  type='datetime-local'
                   name="dueDate"
                   id="dueDate"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
@@ -178,23 +175,8 @@ const CreateTask = () => {
                />
             </div>
 
-            {/* Due Time */}
-            <div className="flex flex-col gap-2">
-               <label htmlFor="dueTime" className="text-gray-200">
-                  Due Time
-               </label>
-               <input
-                  type="time"
-                  name="dueTime"
-                  id="dueTime"
-                  className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
-                  onChange={(e) => setForm({ ...form, dueTime: e.target.value })}
-                  value={form.dueTime}
-               />
-            </div>
-
             {/* Submit */}
-            <Button className="w-full" type="submit">
+            <Button className="w-full mt-5" type="submit">
                Create Task
             </Button>
          </form>

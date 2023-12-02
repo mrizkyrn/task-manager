@@ -23,9 +23,6 @@ const taskSchema = new mongoose.Schema(
       dueDate: {
          type: Date,
       },
-      dueTime: {
-         type: String,
-      },
       completed: {
          type: Boolean,
          default: false,
@@ -35,7 +32,7 @@ const taskSchema = new mongoose.Schema(
          ref: 'User',
          required: true,
       },
-      users: [
+      collaborators: [
          {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',

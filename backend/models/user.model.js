@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema(
          type: String,
          default: 'avatar-1'
       },
+      tasks: [
+         {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Task',
+         },
+      ],
    },
    { timestamps: true }
 );

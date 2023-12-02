@@ -7,6 +7,11 @@ import Button from '../component/Button';
 import NoteInput from '../component/NoteInput';
 import HeaderTitle from '../component/HeaderTitle';
 
+const ISOtoLocalDate = (date) => {
+   const newDate = new Date(date);
+   const offset = newDate.getTimezoneOffset() * 60000;
+   return new Date(newDate - offset).toISOString().slice(0, -1);
+};
 
 const EditTask = () => {
    const location = useLocation();
@@ -18,8 +23,7 @@ const EditTask = () => {
       notes: task.notes,
       priority: task.priority,
       completed: task.completed,
-      dueDate: task.dueDate ? task.dueDate.split('T')[0] : '',
-      dueTime: task.dueTime ? task.dueTime : '',
+      dueDate: ISOtoLocalDate(task.dueDate),
    };
 
    const [form, setForm] = useState(initialForm);
@@ -81,6 +85,8 @@ const EditTask = () => {
          theme: 'colored',
       });
    };
+
+   
 
    return (
       <Container>
@@ -163,7 +169,7 @@ const EditTask = () => {
                   Due Date
                </label>
                <input
-                  type="date"
+                  type="datetime-local"
                   name="dueDate"
                   id="dueDate"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
@@ -172,23 +178,8 @@ const EditTask = () => {
                />
             </div>
 
-            {/* Due Time */}
-            <div className="flex flex-col gap-2">
-               <label htmlFor="dueTime" className="text-gray-200">
-                  Due Time
-               </label>
-               <input
-                  type="time"
-                  name="dueTime"
-                  id="dueTime"
-                  className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
-                  onChange={(e) => setForm({ ...form, dueTime: e.target.value })}
-                  value={form.dueTime}
-               />
-            </div>
-
             {/* Submit */}
-            <Button className="w-full" type="submit">
+            <Button className="w-full mt-5" type="submit">
                Save Task
             </Button>
          </form>

@@ -17,7 +17,7 @@ export async function loader() {
          return null;
       }
 
-      return data.data;
+      return data.data.tasks;
    } catch (err) {
       console.log(err);
       return null;

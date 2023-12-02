@@ -6,31 +6,39 @@ const getTasks = async (req, res, next) => {
    const { id } = req.user;
 
    try {
-      // find all tasks that have the user's id in the users array
-      // populate creator field without password
-      const tasks = await Task.find({ users: id }).populate('creator', '-password');
+      // find all tasks that have the user's id in the collaborators array
+      // populate creator field without password and tasks field
+      const tasks = await Task.find({ collaborators: id }).populate('creator', '-password -tasks');
 
-      // Check if user has any tasks
+      // check if user has any tasks
       if (tasks.length === 0) return next(errorHandler(404, 'No tasks found'));
 
-      res.status(200).send({ success: true, message: 'Tasks fetched successfully', data: tasks });
+      // calculate total, completed and overdue tasks
+      const totalTasks = tasks.length;
+      const completedTasks = tasks.filter((task) => task.completed).length;
+      const overdueTasks = tasks.filter((task) => task.dueDate !== null && task.dueDate < Date.now()).length;
+
+      res.status(200).send({
+         success: true,
+         message: 'Tasks fetched successfully',
+         data: { totalTasks, completedTasks, overdueTasks, tasks },
+      });
    } catch (error) {
       next(error);
    }
 };
 
-const getTask = async (req, res, next) => {
+const getTaskById = async (req, res, next) => {
    const { id } = req.params;
    const { id: userId } = req.user;
 
    try {
+      // check if task exists
       const tasks = await Task.findById(id);
-
-      // Check if task exists
       if (!tasks) return next(errorHandler(404, 'Task not found'));
 
-      // Check if user is authorized
-      if (tasks.users.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+      // check if user is authorized
+      if (tasks.collaborators.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
 
       res.status(200).send({ success: true, message: 'Task fetched successfully', data: tasks });
    } catch (error) {
@@ -43,6 +51,7 @@ const createTask = async (req, res, next) => {
    const { id } = req.user;
 
    try {
+      // create task
       const task = new Task({
          title,
          description,
@@ -50,16 +59,16 @@ const createTask = async (req, res, next) => {
          priority,
          dueDate,
          dueTime,
-         completed: false,
          creator: id,
-         users: [id],
+         collaborators: [id],
       });
 
       await task.save();
 
-      // Add task to user's tasks array
+      // add task to user's tasks array
       const user = await User.findById(id);
       user.tasks.push(task._id);
+
       await user.save();
 
       res.status(201).send({ success: true, message: 'Task created successfully', data: task });
@@ -76,13 +85,13 @@ const updateTask = async (req, res, next) => {
    try {
       const task = await Task.findById(id);
 
-      // Check if task exists
+      // check if task exists
       if (!task) return next(errorHandler(404, 'Task not found'));
 
-      // Check if user is authorized
-      if (task.users.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+      // check if user is authorized
+      if (task.collaborators.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
 
-      // Update task
+      // update task
       task.title = title;
       task.description = description;
       task.notes = notes;
@@ -104,7 +113,7 @@ const deleteTask = async (req, res, next) => {
    try {
       const deletedTask = await Task.findByIdAndDelete(id);
 
-      // Check if task exists
+      // check if task exists
       if (!deletedTask) return next(errorHandler(404, 'Task not found'));
 
       res.status(200).send({ success: true, message: 'Task deleted successfully', data: deletedTask });
@@ -121,13 +130,13 @@ const updateTaskStatus = async (req, res, next) => {
    try {
       const task = await Task.findById(id);
 
-      // Check if task exists
+      // check if task exists
       if (!task) return next(errorHandler(404, 'Task not found'));
 
-      // Check if user is authorized
-      if (task.users.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+      // check if user is authorized
+      if (task.collaborators.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
 
-      // Update task status
+      // update task status
       task.completed = completed;
 
       await task.save();
@@ -137,22 +146,22 @@ const updateTaskStatus = async (req, res, next) => {
    }
 };
 
-const getAllUsers = async (req, res, next) => {
+const getAllCollaboratorUsers = async (req, res, next) => {
    const { id } = req.params;
 
    try {
-      // Find all users id that are in the users array
-      const usersId = await Task.findById(id, 'users');
+      // find all users id that are in the collaborators array
+      const usersId = await Task.findById(id, 'collaborators');
 
-      // Find all users that have the id in the usersId array 
-      const users = await User.find({ _id: { $in: usersId.users } });
+      // find all users that have the id in the usersId array
+      const users = await User.find({ _id: { $in: usersId.collaborators } });
 
-      // Sort users by usersId array
+      // sort users by usersId array
       users.sort((a, b) => {
-         return usersId.users.indexOf(a._id) - usersId.users.indexOf(b._id);
+         return usersId.collaborators.indexOf(a._id) - usersId.collaborators.indexOf(b._id);
       });
 
-      // Remove password from users
+      // remove password from users
       const { password: pwd, ...data } = users;
 
       res.status(200).send({ success: true, message: 'Users fetched successfully', data: users });
@@ -161,47 +170,50 @@ const getAllUsers = async (req, res, next) => {
    }
 };
 
-const addUserToTask = async (req, res, next) => {
+const addUserToCollaborators = async (req, res, next) => {
    const { id } = req.params;
    const { userId } = req.body;
 
    try {
-      // Check if task exists
+      // check if task exists
       const task = await Task.findById(id);
       if (!task) return next(errorHandler(404, 'Task not found'));
 
-      // Check if user exists
+      // check if user exists
       const user = await User.findById(userId, 'username');
       if (!user) return next(errorHandler(404, 'User not found'));
 
-      // Check if user is already added
-      if (task.users.indexOf(userId) !== -1) return next(errorHandler(400, 'User already added'));
+      // check if user is already added
+      if (task.collaborators.indexOf(userId) !== -1) return next(errorHandler(400, 'User already added'));
 
-      // Add user to task
-      task.users.push(userId);
+      // Add user to collaborators array
+      task.collaborators.push(userId);
       await task.save();
 
-      res.status(200).send({ success: true, message: 'User added successfully', data: user});
+      res.status(200).send({ success: true, message: 'User added successfully', data: user });
    } catch (error) {
       next(error);
    }
 };
 
-const removeUserFromTask = async (req, res, next) => {
+const removeUserFromCollaborators = async (req, res, next) => {
    const { id } = req.params;
    const { userId } = req.body;
 
    try {
-      // Check if task exists
+      // check if task exists
       const task = await Task.findById(id);
       if (!task) return next(errorHandler(404, 'Task not found'));
 
-      // Check if user exists
+      // check if user exists
       const user = await User.findById(userId, 'username');
       if (!user) return next(errorHandler(404, 'User not found'));
 
+      // check if user is not creator of task
+      if (task.creator.toString() === userId) return next(errorHandler(400, 'Creator cannot be removed'));
+
       // Remove user from task
-      task.users.pull(userId);
+      task.collaborators.pull(userId);
       await task.save();
 
       res.status(200).send({ success: true, message: 'User removed successfully', data: user });
@@ -212,12 +224,12 @@ const removeUserFromTask = async (req, res, next) => {
 
 module.exports = {
    getTasks,
-   getTask,
+   getTaskById,
    createTask,
    updateTask,
    deleteTask,
    updateTaskStatus,
-   getAllUsers,
-   addUserToTask,
-   removeUserFromTask,
+   getAllCollaboratorUsers,
+   addUserToCollaborators,
+   removeUserFromCollaborators,
 };

@@ -1,10 +1,11 @@
 const express = require('express');
-const { editUser, deleteUser } = require('../controllers/user.controller');
+const { changeUsername, changeAvatar, deleteUser } = require('../controllers/user.controller');
 const verifyToken = require('../utils/userVerify.js');
 
 const router = express.Router();
 
-router.patch('/:id', verifyToken, editUser);
-router.delete('/:id', verifyToken, deleteUser);
+router.patch('/:id/username', verifyToken, changeUsername);
+router.patch('/:id/avatar', verifyToken, changeAvatar);
+router.delete('/', verifyToken, deleteUser);
 
 module.exports = router;

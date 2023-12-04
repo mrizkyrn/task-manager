@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { editUserStart, editUserSuccess, editUserFailure } from '../redux/user/userSlice';
+import { editUserStart, editUsernameSuccess, editAvatarSuccess, editUserFailure } from '../redux/user/userSlice';
+import { changeUsername, changeAvatar, deleteUser } from '../api/user';
 import { LogOutIcon, XMarkIcon } from './Icons';
 import Button from './Button';
 import DialogAlert from './DialogAlert';
@@ -32,61 +33,64 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
       if (newUsername.length < 3) {
          toast.error('Username must be at least 3 characters long.', {
             theme: 'colored',
+            position: 'top-left',
          });
          return;
       }
 
-      const payload = {};
-      if (newUsername !== currentUser.username) payload.username = newUsername;
-      if (newAvatar !== currentUser.avatar) payload.avatar = newAvatar;
+      dispatch(editUserStart());
 
-      try {
-         dispatch(editUserStart());
-
-         const res = await fetch(`/api/users/${currentUser._id}`, {
-            method: 'PATCH',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-         });
-
-         const data = await res.json();
-
+      if (newUsername !== currentUser.username) {
+         const data = await changeUsername(currentUser._id, newUsername);
+         console.log(data.data.username);
          if (!data.success) {
-            console.log(data.message);
             dispatch(editUserFailure(data.message));
+            toast.error(data.message, {
+               theme: 'colored',
+               position: 'top-left',
+            });
             return;
          }
-         dispatch(editUserSuccess({ username: data.user.username, avatar: data.user.avatar }));
+
+         dispatch(editUsernameSuccess(data.data.username));
          toast.success('Username updated successfully.', {
             theme: 'colored',
          });
-         onClose();
-      } catch (err) {
-         console.log(err);
       }
-   };
 
-   const handleDeleteAccount = async () => {
-      try {
-         const res = await fetch(`/api/users/${currentUser._id}`, {
-            method: 'DELETE',
-            credentials: 'include',
-         });
-
-         const data = await res.json();
+      if (newAvatar !== currentUser.avatar) {
+         const data = await changeAvatar(currentUser._id, newAvatar);
 
          if (!data.success) {
-            console.log(data.message);
+            dispatch(editUserFailure(data.message));
+            toast.error(data.message, {
+               theme: 'colored',
+               position: 'top-left',
+            });
             return;
          }
 
-         onLogout();
-      } catch (err) {
-         console.log(err);
+         dispatch(editAvatarSuccess(data.data.avatar));
+         toast.success('Avatar updated successfully.', {
+            theme: 'colored',
+         });
       }
+
+      onClose();
+   };
+
+   const handleDeleteAccount = async () => {
+      const data = await deleteUser(currentUser._id);
+
+      if (!data.success) {
+         toast.error(data.message, {
+            theme: 'colored',
+         });
+         return;
+      }
+
+      onClose();
+      onLogout();
    };
 
    return (
@@ -152,7 +156,9 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
          )}
 
          {/* Show select avatar */}
-         {isSelectAvatarOpen && <SelectAvatar onClose={() => setIsSelectAvatarOpen(false)} onSelected={handleAvatarChange} />}
+         {isSelectAvatarOpen && (
+            <SelectAvatar onClose={() => setIsSelectAvatarOpen(false)} onSelected={handleAvatarChange} />
+         )}
       </div>
    );
 };

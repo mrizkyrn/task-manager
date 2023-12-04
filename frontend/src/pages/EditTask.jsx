@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { updateTask } from '../api/task';
 import { AddIcon } from '../component/Icons';
 import Container from '../component/Container';
 import Button from '../component/Button';
@@ -8,6 +9,7 @@ import NoteInput from '../component/NoteInput';
 import HeaderTitle from '../component/HeaderTitle';
 
 const ISOtoLocalDate = (date) => {
+   if (!date) return '';
    const newDate = new Date(date);
    const offset = newDate.getTimezoneOffset() * 60000;
    return new Date(newDate - offset).toISOString().slice(0, -1);
@@ -40,27 +42,14 @@ const EditTask = () => {
       // remove empty notes
       const notes = form.notes.filter((note) => note !== '');
 
-      try {
-         const res = await fetch(`/api/tasks/${task._id}`, {
-            method: 'PUT',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...form, notes }),
-         });
-         const data = await res.json();
+      const data = await updateTask(task._id, { ...form, notes });
 
-         if (!data.success) {
-            onSubmitFailure(data.message);
-            return;
-         }
-
-         onSubmitSuccess();
-      } catch (err) {
-         onSubmitFailure('Something went wrong. Please try again later.');
-         console.log(err);
+      if (!data.success) {
+         onSubmitFailure(data.message);
+         return;
       }
+
+      onSubmitSuccess();
    };
 
    const validateForm = () => {
@@ -69,6 +58,9 @@ const EditTask = () => {
          toast.error('Title cannot be empty.');
          return false;
       }
+      
+      // convert the date to ISO format
+      if (form.dueDate) form.dueDate = new Date(form.dueDate).toISOString();
 
       return true;
    };
@@ -85,8 +77,6 @@ const EditTask = () => {
          theme: 'colored',
       });
    };
-
-   
 
    return (
       <Container>

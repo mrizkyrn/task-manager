@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import { createTask } from '../api/task';
 import { AddIcon } from '../component/Icons';
 import Container from '../component/Container';
 import Button from '../component/Button';
@@ -28,32 +29,18 @@ const CreateTask = () => {
 
       // remove empty notes
       const notes = form.notes.filter((note) => note !== '');
-      
+
       // convert the date to ISO format
-      form.dueDate = new Date(form.dueDate).toISOString();
+      if (form.dueDate) form.dueDate = new Date(form.dueDate).toISOString();
 
-      try {
-         const res = await fetch('/api/tasks', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ ...form, notes }),
-         });
-
-         const data = await res.json();
-
-         if (!data.success) {
-            onSubmitFailure(data.message);
-            return;
-         }
-
-         onSubmitSuccess();
-      } catch (err) {
-         onSubmitFailure('Something went wrong. Please try again later.');
-         console.log(err);
+      const data = await createTask({ ...form, notes });
+      console.log(data);
+      if (!data.success) {
+         onSubmitFailure(data.message);
+         return;
       }
+
+      onSubmitSuccess();
    };
 
    const validateForm = () => {
@@ -166,7 +153,7 @@ const CreateTask = () => {
                   Due Date
                </label>
                <input
-                  type='datetime-local'
+                  type="datetime-local"
                   name="dueDate"
                   id="dueDate"
                   className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
-import { PlusIcon } from './Icons';
 import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { addUserToCollaborators, removeUserFromCollaborators, getAllCollaboratorUsers } from '../api/task';
+import { PlusIcon } from './Icons';
 import User from './User';
 
 const TaskInfo = ({ task }) => {
@@ -8,74 +10,51 @@ const TaskInfo = ({ task }) => {
 
    useEffect(() => {
       const getUsers = async () => {
-         try {
-            const res = await fetch(`/api/tasks/${task._id}/users`, {
-               method: 'GET',
-               credentials: 'include',
-            });
+         const data = await getAllCollaboratorUsers(task._id);
 
-            const data = await res.json();
-
-            if (!data.success) {
-               console.log(data.message);
-               return;
-            }
-
-            setUsers(data.data);
-         } catch (error) {
-            console.log(error);
+         if (!data.success) {
+            console.log(data.message);
+            return;
          }
+
+         setUsers(data.data);
       };
 
       getUsers();
    }, [task._id, task.users]);
 
    const handleAddUser = async () => {
-      try {
-         const res = await fetch(`/api/tasks/${task._id}/users`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId: '6565e1dc6f8eef1e0c630d22' }),
+      const data = await addUserToCollaborators(task._id, '656af202b24950fc3e06ed75');
+
+      if (!data.success) {
+         toast.error(data.message, {
+            theme: 'colored',
+            position: 'top-left',
          });
-
-         const data = await res.json();
-
-         if (!data.success) {
-            console.log(data.message);
-            return;
-         }
-
-         setUsers((prev) => [...prev, data.data]);
-      } catch (error) {
-         console.log(error);
+         return;
       }
+
+      setUsers((prev) => [...prev, data.data]);
+      toast.success(`${data.data.username} added to collaborators.`, {
+         theme: 'colored',
+      });
    };
 
    const handleRemoveUser = async (userId) => {
-      try {
-         const res = await fetch(`/api/tasks/${task._id}/users/`, {
-            method: 'DELETE',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId }),
+      const data = await removeUserFromCollaborators(task._id, userId);
+
+      if (!data.success) {
+         toast.error(data.message, {
+            theme: 'colored',
+            position: 'top-left',
          });
-
-         const data = await res.json();
-
-         if (!data.success) {
-            console.log(data.message);
-            return;
-         }
-
-         setUsers((prev) => prev.filter((user) => user._id !== userId));
-      } catch (error) {
-         console.log(error);
+         return;
       }
+
+      setUsers((prev) => prev.filter((user) => user._id !== userId));
+      toast.success(`${data.data.username} removed from collaborators.`, {
+         theme: 'colored',
+      });
    };
 
    const formatDate = (date) => {
@@ -98,7 +77,7 @@ const TaskInfo = ({ task }) => {
          </div>
 
          <div>
-            <p className="font-semibold text-gray-300">Assigned to</p>
+            <p className="font-semibold text-gray-300">Collaborators</p>
             <div className="flex flex-wrap items-center gap-3 mt-3">
                {users && users.map((user) => <User key={user._id} user={user} onRemove={handleRemoveUser} />)}
                <button
@@ -119,6 +98,9 @@ const TaskInfo = ({ task }) => {
             <p className="font-semibold text-gray-300">Updated at</p>
             <p className="mt-2 text-gray-400">{formatDate(task.updatedAt)}</p>
          </div>
+
+         {/* Toastify */}
+         <ToastContainer />
       </div>
    );
 };

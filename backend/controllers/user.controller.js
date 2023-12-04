@@ -2,6 +2,46 @@ const User = require('../models/user.model.js');
 const Task = require('../models/task.model.js');
 const errorHandler = require('../utils/errorHandler');
 
+const changeUsername = async (req, res, next) => {
+   const { id } = req.params;
+   const { username } = req.body;
+
+   try {
+      // Check if user is authorized
+      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
+
+      // Check if username is already taken
+      if (username) {
+         const existingUser = await User.findOne({ username });
+         if (existingUser) return next(errorHandler(400, 'Username already taken'));
+      }
+
+      // update username
+      await User.updateOne({ _id: id }, { username });
+
+      res.status(200).send({ success: true, message: 'Username updated successfully', data: { username } });
+   } catch (error) {
+      next(error);
+   }
+};
+
+const changeAvatar = async (req, res, next) => {
+   const { id } = req.params;
+   const { avatar } = req.body;
+
+   try {
+      // Check if user is authorized
+      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
+
+      // update avatar
+      await User.updateOne({ _id: id }, { avatar });
+
+      res.status(200).send({ success: true, message: 'Avatar updated successfully', data: { avatar } });
+   } catch (error) {
+      next(error);
+   }
+};
+
 const editUser = async (req, res, next) => {
    const { id } = req.params;
    const { username, avatar } = req.body;
@@ -33,12 +73,8 @@ const editUser = async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
-   const { id } = req.params;
-
+   const { id } = req.user;
    try {
-      // Check if user is authorized
-      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
-
       // Delete user
       await User.findByIdAndDelete(id);
 
@@ -55,6 +91,8 @@ const deleteUser = async (req, res, next) => {
 };
 
 module.exports = {
+   changeUsername,
+   changeAvatar,
    editUser,
    deleteUser,
 };

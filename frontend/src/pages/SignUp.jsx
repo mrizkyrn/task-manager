@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupStart, signupSuccess, signupFailure } from '../redux/user/userSlice';
 import { Link } from 'react-router-dom';
+import { signup } from '../api/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '../component/Button';
 
@@ -24,17 +25,12 @@ const SignUp = () => {
 
       if (!validateForm()) return;
 
+      const { username, password } = formData;
+
       try {
          dispatch(signupStart());
 
-         const response = await fetch('/api/auth/signup', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-         });
-         const data = await response.json();
+         const data = await signup(username, password);
 
          if (!data.success) {
             onSignupFailure(data.message);
@@ -44,7 +40,7 @@ const SignUp = () => {
          onSignupSuccess();
       } catch (err) {
          console.log(err);
-         dispatch(signupFailure('Something went wrong. Please try again later.'));
+         onSignupFailure('Something went wrong. Please try again.');
       }
    };
 

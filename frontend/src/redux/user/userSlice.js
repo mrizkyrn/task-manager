@@ -49,10 +49,13 @@ const userSlice = createSlice({
          state.loading = true;
          state.error = null;
       },
-      editUserSuccess(state, action) {
+      editUsernameSuccess(state, action) {
          state.loading = false;
-         state.currentUser.username = action.payload.username;
-         state.currentUser.avatar = action.payload.avatar;
+         state.currentUser.username = action.payload;
+      },
+      editAvatarSuccess(state, action) {
+         state.loading = false;
+         state.currentUser.avatar = action.payload;
       },
       editUserFailure(state, action) {
          state.loading = false;
@@ -72,7 +75,8 @@ export const {
    signoutSuccess,
    signoutFailure,
    editUserStart,
-   editUserSuccess,
+   editUsernameSuccess,
+   editAvatarSuccess,
    editUserFailure,
 } = userSlice.actions;
 

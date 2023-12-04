@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { deleteTask, updateTaskStatus } from '../api/task';
 import { CheckIcon } from './Icons';
 import MenuButton from './MenuButton';
 import DialogAlert from './DialogAlert';
@@ -33,31 +34,18 @@ const TaskCard = ({ task, setTasks }) => {
          day: 'numeric',
       });
 
-   const handleMarkAsCompleted = async (id, value) => {
-      try {
-         const res = await fetch(`/api/tasks/${id}`, {
-            method: 'PATCH',
-            credentials: 'include',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ completed: value }),
-         });
-         const data = await res.json();
+   const updateStatus = async (id, value) => {
+      const data = await updateTaskStatus(id, value);
 
-         if (!data.success) {
-            toast.error('Something went wrong. Please try again later.', {
-               theme: 'colored',
-            });
-            return;
-         }
-
-         setTasks((prev) => prev.map((task) => (task._id === id ? { ...task, completed: value } : task)));
-      } catch (err) {
+      if (!data.success) {
          toast.error('Something went wrong. Please try again later.', {
             theme: 'colored',
+            position: 'top-left',
          });
+         return;
       }
+
+      setTasks((prev) => prev.map((task) => (task._id === id ? { ...task, completed: value } : task)));
    };
 
    const handleEdit = (task) => {
@@ -67,29 +55,19 @@ const TaskCard = ({ task, setTasks }) => {
    const handleDelete = async (id) => {
       setIsAlertOpen(false);
 
-      try {
-         const res = await fetch(`/api/tasks/${id}`, {
-            method: 'DELETE',
-            credentials: 'include',
-         });
-         const data = await res.json();
+      const data = await deleteTask(id);
 
-         if (!data.success) {
-            console.log(data.message);
-            toast.error('Something went wrong. Please try again later.', {
-               theme: 'colored',
-            });
-            return;
-         }
-
-         console.log(data);
-         setTasks((prev) => prev.filter((task) => task._id !== id));
-         toast.success('Task deleted successfully.', {
+      if (!data.success) {
+         toast.error('Something went wrong. Please try again later.', {
             theme: 'colored',
          });
-      } catch (err) {
-         console.log(err);
+         return;
       }
+
+      setTasks((prev) => prev.filter((task) => task._id !== id));
+      toast.success('Task deleted successfully.', {
+         theme: 'colored',
+      });
    };
 
    const handleView = (task) => {
@@ -124,7 +102,7 @@ const TaskCard = ({ task, setTasks }) => {
             </div>
             <div className="absolute top-4 right-3 text-sm sm:text-base basis-12 sm:basis-44 flex flex-col justify-between items-end">
                <MenuButton
-                  onCompleted={() => handleMarkAsCompleted(task._id, !task.completed)}
+                  onCompleted={() => updateStatus(task._id, !task.completed)}
                   onEdit={() => handleEdit(task)}
                   onDelete={() => setIsAlertOpen(true)}
                   isCompleted={task.completed}

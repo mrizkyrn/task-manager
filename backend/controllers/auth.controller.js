@@ -44,7 +44,7 @@ const signin = async (req, res, next) => {
       const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
 
       // send user data and token
-      const user = { id: validUser._id, username: validUser.username, avatar: validUser.avatar };
+      const user = { _id: validUser._id, username: validUser.username, avatar: validUser.avatar };
       res.cookie('access_token', token, { httpOnly: true })
          .status(200)
          .send({ success: true, message: 'User signed in successfully', user });

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signoutStart, signoutSuccess, signoutFailure } from '../redux/user/userSlice';
+import { signout } from '../api/auth';
 import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
 import DialogAlert from './DialogAlert';
 import UserProfile from './UserProfile';
@@ -42,25 +43,16 @@ const Navbar = () => {
    };
 
    const handleLogout = async () => {
-      try {
-         dispatch(signoutStart());
+      dispatch(signoutStart());
 
-         const res = await fetch('/api/auth/signout', {
-            method: 'GET',
-         });
+      const res = await signout();
 
-         const data = await res.json();
-
-         if (!data.success) {
-            dispatch(signoutFailure('Something went wrong. Please try again later.'));
-            return;
-         }
-
-         dispatch(signoutSuccess());
-      } catch (err) {
-         console.log(err);
-         dispatch(signoutFailure('Something went wrong. Please try again later.'));
+      if (!res.success) {
+         dispatch(signoutFailure(res.message));
+         return;
       }
+
+      dispatch(signoutSuccess());
    };
 
    return (

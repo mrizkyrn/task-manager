@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { signin } from '../api/auth';
 import Button from '../component/Button';
 
 const SignIn = () => {
@@ -17,33 +18,36 @@ const SignIn = () => {
    const handleSubmit = async (e) => {
       e.preventDefault();
 
-      try {
-         dispatch(signinStart());
+      if (!validateForm()) return;
+      
+      const { username, password } = formData;
 
-         const response = await fetch('/api/auth/signin', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-         });
+      dispatch(signinStart());
 
-         const data = await response.json();
-
-         console.log(data);
-
-         if (!data.success) {
-            dispatch(signinFailure(data.message));
-            return;
-         }
-
-         dispatch(signinSuccess(data.user));
-
-         navigate('/');
-      } catch (err) {
-         console.log(err);
-         dispatch(signinFailure('Something went wrong. Please try again later.'));
+      const data = await signin(username, password);
+      if (!data.success) {
+         dispatch(signinFailure(data.message));
+         return;
       }
+
+      dispatch(signinSuccess(data.user));
+      navigate('/');
+   };
+
+   const validateForm = () => {
+      // check if the username is empty
+      if (!formData.username) {
+         dispatch(signinFailure('Username cannot be empty.'));
+         return false;
+      }
+
+      // check if the password is empty
+      if (!formData.password) {
+         dispatch(signinFailure('Password cannot be empty.'));
+         return false;
+      }
+
+      return true;
    };
 
    return (

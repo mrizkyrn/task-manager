@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/signup', signup);
 router.post('/signin', signin);
-router.get('/signout', signout);
+router.post('/signout', signout);
 router.get('/', verifyToken, (req, res) => {
    res.status(200).send({ success: true, user: req.user });
 });

@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { XMarkIcon } from './Icons';
 import DialogAlert from './DialogAlert';
 import Button from './Button';
 
 const UserInfo = ({ user, onClose, onRemove }) => {
+   const { currentUser } = useSelector((state) => state.user);
    const [isAlertOpen, setIsAlertOpen] = useState(false);
 
    return (
@@ -25,7 +27,7 @@ const UserInfo = ({ user, onClose, onRemove }) => {
                className="w-full text-sm sm:text-base flex justify-center items-center mt-12 !bg-red-800"
                onClick={() => setIsAlertOpen(true)}
             >
-               Remove User
+               {currentUser._id === user._id ? 'Leave the task' : 'Remove user'}
             </Button>
          </div>
 

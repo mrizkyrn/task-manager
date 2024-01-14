@@ -34,7 +34,7 @@ const CreateTask = () => {
       if (form.dueDate) form.dueDate = new Date(form.dueDate).toISOString();
 
       const data = await createTask({ ...form, notes });
-      console.log(data);
+      
       if (!data.success) {
          onSubmitFailure(data.message);
          return;

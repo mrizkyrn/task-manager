@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signoutStart, signoutSuccess, signoutFailure } from '../redux/user/userSlice';
 import { signout } from '../api/auth';
@@ -32,11 +32,12 @@ const NavbarItems = () => [
 
 const Navbar = () => {
    const dispatch = useDispatch();
+   const navigate = useNavigate();
    const { currentUser, loading } = useSelector((state) => state.user);
    const [isProfileOpen, setIsProfileOpen] = useState(false);
    const [isAlertOpen, setIsAlertOpen] = useState(false);
-   const username = currentUser && currentUser.username;
-   const avatar = currentUser && currentUser.avatar;
+   const username = currentUser ? currentUser.username : 'User';
+   const avatar = currentUser ? currentUser.avatar : 'avatar-1';
 
    const handleProfileClick = () => {
       setIsProfileOpen(true);
@@ -53,6 +54,7 @@ const Navbar = () => {
       }
 
       dispatch(signoutSuccess());
+      navigate('/signin');
    };
 
    return (

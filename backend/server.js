@@ -1,14 +1,14 @@
+require('dotenv').config({ path: '../.env' });
+
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const ClientError = require('./exceptions/ClientError');
 
 const userRoute = require('./routes/user.route.js');
 const authRoute = require('./routes/auth.route.js');
 const taskRoute = require('./routes/task.route.js');
-
-dotenv.config({ path: '../.env' });
 
 mongoose
    .connect(process.env.MONGO_URL)
@@ -35,13 +35,29 @@ app.use('/api/auth', authRoute);
 app.use('/api/tasks', taskRoute);
 
 // Middleware
-app.use((error, req, res, next) => {
-   const statusCode = error.statusCode || 500;
-   const message = error.message || 'Internal server error';
+// app.use((error, res) => {
+//    const statusCode = error.statusCode || 500;
+//    const message = error.message || 'Internal server error';
 
-   res.status(statusCode).json({
-      success: false,
-      statusCode,
-      message,
-   });
+//    res.status(statusCode).json({
+//       success: false,
+//       statusCode,
+//       message,
+//    });
+// });
+
+// eslint-disable-next-line no-unused-vars
+app.use((error, req, res, next) => {
+   console.log('this is middleware');
+   if (error instanceof ClientError) {
+      res.status(error.statusCode).json({
+         success: false,
+         message: error.message,
+      });
+   } else {
+      res.status(500).json({
+         success: false,
+         message: 'Internal server error',
+      });
+   }
 });

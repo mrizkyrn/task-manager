@@ -8,8 +8,10 @@ const api = axios.create({
 export const getUserTasks = async () => {
    try {
       const response = await api.get('/');
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -17,8 +19,10 @@ export const getUserTasks = async () => {
 export const getTaskById = async (id) => {
    try {
       const response = await api.get(`/${id}`);
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -26,8 +30,10 @@ export const getTaskById = async (id) => {
 export const createTask = async (task) => {
    try {
       const response = await api.post('/', task);
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -35,8 +41,10 @@ export const createTask = async (task) => {
 export const updateTask = async (id, task) => {
    try {
       const response = await api.put(`/${id}`, task);
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -44,8 +52,10 @@ export const updateTask = async (id, task) => {
 export const deleteTask = async (id) => {
    try {
       const response = await api.delete(`/${id}`);
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -53,8 +63,10 @@ export const deleteTask = async (id) => {
 export const updateTaskStatus = async (id, completed) => {
    try {
       const response = await api.patch(`/${id}`, { completed });
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -62,8 +74,10 @@ export const updateTaskStatus = async (id, completed) => {
 export const getAllCollaboratorUsers = async (id) => {
    try {
       const response = await api.get(`/${id}/users`);
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -71,8 +85,10 @@ export const getAllCollaboratorUsers = async (id) => {
 export const addUserToCollaborators = async (id, userId) => {
    try {
       const response = await api.post(`/${id}/users`, { userId });
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };
@@ -80,8 +96,10 @@ export const addUserToCollaborators = async (id, userId) => {
 export const removeUserFromCollaborators = async (id, userId) => {
    try {
       const response = await api.delete(`/${id}/users`, { data: { userId } });
+      console.log(response.data);
       return response.data;
    } catch (error) {
+      console.log(error.response.data);
       return error.response.data;
    }
 };

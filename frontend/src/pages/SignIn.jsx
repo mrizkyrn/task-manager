@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,9 +7,15 @@ import Button from '../component/Button';
 
 const SignIn = () => {
    const [formData, setFormData] = useState({});
-   const { loading, error } = useSelector((state) => state.user);
+   const { currentUser, loading, error } = useSelector((state) => state.user);
    const navigate = useNavigate();
    const dispatch = useDispatch();
+
+   useEffect(() => {
+      if (currentUser) {
+         navigate('/');
+      }
+   }, [currentUser, navigate]);
 
    const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +25,7 @@ const SignIn = () => {
       e.preventDefault();
 
       if (!validateForm()) return;
-      
+
       const { username, password } = formData;
 
       dispatch(signinStart());
@@ -53,10 +59,7 @@ const SignIn = () => {
    return (
       <div className="w-full h-screen flex flex-col justify-center items-center gap-10 px-7 bg-semiDark">
          <h1 className="text-3xl font-bold text-light">Sign In</h1>
-         <form
-            className="w-64 sm:w-72 flex flex-col justify-start items-center gap-5"
-            onSubmit={handleSubmit}
-         >
+         <form className="w-64 sm:w-72 flex flex-col justify-start items-center gap-5" onSubmit={handleSubmit}>
             {/* Username */}
             <input
                className="w-full px-5 py-3 rounded-md border-gray-300 bg-[#212e42] text-gray-200"
@@ -81,7 +84,7 @@ const SignIn = () => {
                {loading ? 'Loading...' : 'Sign In'}
             </Button>
          </form>
-         
+
          <div className="mt-5">
             <span className="text-light">Don&apos;t have an account? </span>
             <Link className="text-sky-600 font-bold" to="/signup">

@@ -3,14 +3,27 @@ const Task = require('../models/task.model.js');
 const User = require('../models/user.model.js');
 
 const getTasks = async (req, res, next) => {
-   const { id } = req.user;
+   const userId = req.user.id;
 
    try {
-      // find all tasks that have the user's id in the collaborators array
-      // populate creator field without password and tasks field
-      const tasks = await Task.find({ collaborators: id }).populate('creator', '-password -tasks');
+      // find user and populate tasks array
+      const user = await User.findById(userId)
+         .populate({
+            path: 'tasks',
+            populate: {
+               path: 'creator',
+               select: '-password -tasks',
+            },
+         })
+         .exec();
 
-      // calculate total, completed and overdue tasks
+      // check if user exists
+      if (!user) return next(errorHandler(404, 'User not found'));
+
+      // get tasks array
+      const tasks = user.tasks || [];
+
+      // get total tasks, completed tasks, and overdue tasks
       const totalTasks = tasks.length;
       const completedTasks = tasks.filter((task) => task.completed).length;
       const overdueTasks = tasks.filter((task) => task.dueDate !== null && task.dueDate < Date.now()).length;
@@ -18,7 +31,12 @@ const getTasks = async (req, res, next) => {
       res.status(200).send({
          success: true,
          message: 'Tasks fetched successfully',
-         data: { totalTasks, completedTasks, overdueTasks, tasks },
+         data: {
+            totalTasks,
+            completedTasks,
+            overdueTasks,
+            tasks,
+         },
       });
    } catch (error) {
       next(error);
@@ -57,7 +75,6 @@ const createTask = async (req, res, next) => {
          dueDate,
          dueTime,
          creator: id,
-         collaborators: [id],
       });
 
       await task.save();
@@ -86,7 +103,7 @@ const updateTask = async (req, res, next) => {
       if (!task) return next(errorHandler(404, 'Task not found'));
 
       // check if user is authorized
-      if (task.collaborators.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+      if (task.collaborators.indexOf(userId) === -1 && task.creator.toString() !== userId) return next(errorHandler(403, 'Access denied'));
 
       // update task
       task.title = title;
@@ -109,24 +126,32 @@ const deleteTask = async (req, res, next) => {
    const { id } = req.params;
 
    try {
-      // get task
-      const task = await Task.findById(id);
-
       // check if task exists
+      const task = await Task.findById(id);
       if (!task) return next(errorHandler(404, 'Task not found'));
 
       // check if user is authorized
-      if (task.collaborators.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+      if (task.collaborators.indexOf(userId) === -1 && task.creator.toString() !== userId) return next(errorHandler(403, 'Access denied'));
 
-      // if task collaborator length is 1, delete task and remove task from user's tasks array
-      if (task.collaborators.length === 1) {
-         await Task.findByIdAndDelete(id);
-         await User.updateOne({ tasks: id }, { $pull: { tasks: id } });
+      const user = await User.findById(userId);
+
+      // if user is creator
+      if (task.creator.toString() === userId) {
+         // delete task if no collaborators
+         if (task.collaborators.length === 0) await Task.findByIdAndDelete(id);
       } else {
-         // if task collaborator length is more than 1, remove task from user's tasks array and remove user from task collaborators array
-         await User.updateOne({ tasks: id }, { $pull: { tasks: id } });
-         await Task.updateOne({ collaborators: userId }, { $pull: { collaborators: userId } });
+         // delete task if user is the only collaborator
+         if (task.collaborators.length === 1) await Task.findByIdAndDelete(id);
+
+         // remove user from collaborators array
+         task.collaborators.pull(userId);
+         await task.save();
       }
+
+      // remove task from user's tasks array
+      user.tasks.pull(id);
+      await user.save();
+
       return res.status(200).send({ success: true, message: 'Task deleted successfully', data: task });
    } catch (error) {
       next(error);
@@ -145,7 +170,7 @@ const updateTaskStatus = async (req, res, next) => {
       if (!task) return next(errorHandler(404, 'Task not found'));
 
       // check if user is authorized
-      if (task.collaborators.indexOf(userId) === -1) return next(errorHandler(403, 'Access denied'));
+      if (task.collaborators.indexOf(userId) === -1 && task.creator.toString() !== userId) return next(errorHandler(403, 'Access denied'));
 
       // update task status
       task.completed = completed;
@@ -168,13 +193,11 @@ const getAllCollaboratorUsers = async (req, res, next) => {
       const users = await User.find({ _id: { $in: usersId.collaborators } }, '-password -tasks');
 
       // sort users by usersId array
-      users.sort((a, b) => {
-         return usersId.collaborators.indexOf(a._id) - usersId.collaborators.indexOf(b._id);
-      });
+      users.sort((a, b) => usersId.collaborators.indexOf(a._id) - usersId.collaborators.indexOf(b._id));
 
       // remove password from all users
 
-      res.status(200).send({ success: true, message: 'Users fetched successfully', data: users });
+      res.status(200).send({ success: true, message: 'Collaborators fetched successfully', data: users });
    } catch (error) {
       next(error);
    }
@@ -190,7 +213,7 @@ const addUserToCollaborators = async (req, res, next) => {
       if (!task) return next(errorHandler(404, 'Task not found'));
 
       // check if user exists and get username and avatar
-      const user = await User.findById(userId, 'username avatar');
+      const user = await User.findById(userId);
       if (!user) return next(errorHandler(404, 'User not found'));
 
       // check if user is already added
@@ -200,7 +223,15 @@ const addUserToCollaborators = async (req, res, next) => {
       task.collaborators.push(userId);
       await task.save();
 
-      res.status(200).send({ success: true, message: 'User added successfully', data: user });
+      // Add task to user's tasks array
+      user.tasks.push(id);
+      await user.save();
+
+      res.status(200).send({
+         success: true,
+         message: 'User added successfully',
+         data: { _id: user._id, username: user.username, avatar: user.avatar },
+      });
    } catch (error) {
       next(error);
    }

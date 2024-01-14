@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
       },
       avatar: {
          type: String,
-         default: 'avatar-1'
+         default: 'avatar-1',
       },
       tasks: [
          {
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
          },
       ],
    },
-   { timestamps: true }
+   { timestamps: true },
 );
 
 const User = mongoose.model('User', userSchema);

@@ -20,11 +20,11 @@ const TaskInfo = ({ task }) => {
          setUsers(data.data);
       };
 
-      getUsers();
-   }, [task._id, task.users]);
+      if (task.collaborators.length > 0) getUsers();
+   }, [task._id, task.collaborators]);
 
    const handleAddUser = async () => {
-      const data = await addUserToCollaborators(task._id, '656af202b24950fc3e06ed75');
+      const data = await addUserToCollaborators(task._id, '656ec69f26a5f1df7ea0736e');
 
       if (!data.success) {
          toast.error(data.message, {

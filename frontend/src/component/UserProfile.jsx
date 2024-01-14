@@ -42,7 +42,7 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
 
       if (newUsername !== currentUser.username) {
          const data = await changeUsername(currentUser._id, newUsername);
-         console.log(data.data.username);
+         
          if (!data.success) {
             dispatch(editUserFailure(data.message));
             toast.error(data.message, {

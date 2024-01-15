@@ -1,23 +1,20 @@
-const User = require('../models/user.model.js');
 const Task = require('../models/task.model.js');
-const errorHandler = require('../utils/errorHandler');
+const AuthorizationError = require('../exceptions/AuthorizationError');
+const UsersService = require('../services/mongodb/UsersService');
 
 const changeUsername = async (req, res, next) => {
-   const { id } = req.params;
-   const { username } = req.body;
-
    try {
+      const { id } = req.params;
+      const { username } = req.body;
+
       // Check if user is authorized
-      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
+      if (id !== req.user.id) return next(new AuthorizationError('Access denied'));
 
       // Check if username is already taken
-      if (username) {
-         const existingUser = await User.findOne({ username });
-         if (existingUser) return next(errorHandler(400, 'Username already taken'));
-      }
+      await UsersService.verifyUsername(username);
 
       // update username
-      await User.updateOne({ _id: id }, { username });
+      await UsersService.changeUsername(id, username);
 
       res.status(200).send({ success: true, message: 'Username updated successfully', data: { username } });
    } catch (error) {
@@ -26,15 +23,15 @@ const changeUsername = async (req, res, next) => {
 };
 
 const changeAvatar = async (req, res, next) => {
-   const { id } = req.params;
-   const { avatar } = req.body;
-
    try {
+      const { id } = req.params;
+      const { avatar } = req.body;
+
       // Check if user is authorized
-      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
+      if (id !== req.user.id) return next(new AuthorizationError('Access denied'));
 
       // update avatar
-      await User.updateOne({ _id: id }, { avatar });
+      await UsersService.changeAvatar(id, avatar);
 
       res.status(200).send({ success: true, message: 'Avatar updated successfully', data: { avatar } });
    } catch (error) {
@@ -43,40 +40,31 @@ const changeAvatar = async (req, res, next) => {
 };
 
 const editUser = async (req, res, next) => {
-   const { id } = req.params;
-   const { username, avatar } = req.body;
-
    try {
+      const { id } = req.params;
+      const { username, avatar } = req.body;
+
       // Check if user is authorized
-      if (id !== req.user.id) return next(errorHandler(403, 'Access denied'));
+      if (id !== req.user.id) return next(new AuthorizationError('Access denied'));
 
       // Check if username is already taken
-      if (username) {
-         const existingUser = await User.findOne({ username });
-         if (existingUser) return next(errorHandler(400, 'Username already taken'));
-      }
+      await UsersService.verifyUsername(username);
 
-      // Check if user exists
-      const user = await User.findById(id);
-      if (!user) return next(errorHandler(404, 'User not found'));
+      // Update user
+      const data = await UsersService.editUser(id, username, avatar);
 
-      // Update username
-      if (username) user.username = username;
-      if (avatar) user.avatar = avatar;
-      await user.save();
-
-      const { password: pwd, ...data } = user._doc;
-      res.status(200).send({ success: true, message: 'User updated successfully', user: data });
+      res.status(200).send({ success: true, message: 'User updated successfully', data });
    } catch (error) {
       next(error);
    }
 };
 
 const deleteUser = async (req, res, next) => {
-   const { id } = req.user;
    try {
+      const { id } = req.user;
+
       // Delete user
-      await User.findByIdAndDelete(id);
+      await UsersService.deleteUserById(id);
 
       // Delete all tasks created by user
       await Task.deleteMany({ creator: id });

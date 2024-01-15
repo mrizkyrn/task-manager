@@ -93,9 +93,9 @@ export const addUserToCollaborators = async (id, userId) => {
    }
 };
 
-export const removeUserFromCollaborators = async (id, userId) => {
+export const removeUserFromCollaborators = async (id, removedUserId) => {
    try {
-      const response = await api.delete(`/${id}/users`, { data: { userId } });
+      const response = await api.delete(`/${id}/users`, { data: { removedUserId } });
       console.log(response.data);
       return response.data;
    } catch (error) {

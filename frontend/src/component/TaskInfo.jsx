@@ -52,7 +52,7 @@ const TaskInfo = ({ task }) => {
       }
 
       setUsers((prev) => prev.filter((user) => user._id !== userId));
-      toast.success(`${data.data.username} removed from collaborators.`, {
+      toast.success(data.message, {
          theme: 'colored',
       });
    };

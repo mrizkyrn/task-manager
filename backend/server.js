@@ -48,7 +48,6 @@ app.use('/api/tasks', taskRoute);
 
 // eslint-disable-next-line no-unused-vars
 app.use((error, req, res, next) => {
-   console.log('this is middleware');
    if (error instanceof ClientError) {
       res.status(error.statusCode).json({
          success: false,

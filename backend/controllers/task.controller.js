@@ -2,7 +2,7 @@ const TasksService = require('../services/mongodb/TasksService');
 const UsersService = require('../services/mongodb/UsersService.js');
 
 const createTask = async (req, res, next) => {
-   const { title, description, notes, priority, dueDate } = req.body;
+   const { title, description, notes, priority, status, dueDate } = req.body;
    const { id } = req.user;
 
    try {
@@ -12,6 +12,7 @@ const createTask = async (req, res, next) => {
          description,
          notes,
          priority,
+         status,
          dueDate,
          creator: id,
       });
@@ -66,7 +67,7 @@ const getTaskById = async (req, res, next) => {
 
 const updateTask = async (req, res, next) => {
    const { id: taskId } = req.params;
-   const { title, description, notes, priority, dueDate, completed } = req.body;
+   const { title, description, notes, priority, status, dueDate, completed } = req.body;
    const { id: userId } = req.user;
 
    try {
@@ -79,6 +80,7 @@ const updateTask = async (req, res, next) => {
          description,
          notes,
          priority,
+         status,
          dueDate,
          completed,
       });
@@ -97,7 +99,6 @@ const deleteTask = async (req, res, next) => {
       await TasksService.verifyTaskAccess(id, userId);
 
       const task = await TasksService.getTaskById(id);
-      console.log('task ', task);
 
       // if user is creator
       if (task.creator.toString() === userId) {
@@ -118,14 +119,13 @@ const deleteTask = async (req, res, next) => {
 
       return res.status(200).send({ success: true, message: 'Task deleted successfully', data: task });
    } catch (error) {
-      console.log(error);
       next(error);
    }
 };
 
 const updateTaskStatus = async (req, res, next) => {
    const { id } = req.params;
-   const { completed } = req.body;
+   const { status } = req.body;
    const { id: userId } = req.user;
 
    try {
@@ -133,10 +133,11 @@ const updateTaskStatus = async (req, res, next) => {
       await TasksService.verifyTaskAccess(id, userId);
 
       // update task status
-      await TasksService.updateTaskStatus(id, completed);
+      await TasksService.updateTaskStatus(id, status);
 
       res.status(200).send({ success: true, message: 'Task status updated successfully' });
    } catch (error) {
+      console.log(error);
       next(error);
    }
 };
@@ -188,7 +189,6 @@ const removeUserFromCollaborators = async (req, res, next) => {
 
    try {
       // check if user exists and get username
-      console.log('removedUserId ', removedUserId);
       const user = await UsersService.getUserById(removedUserId);
 
       // check if user is authorized

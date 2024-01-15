@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { deleteTask, updateTaskStatus } from '../api/task';
-import { CheckIcon } from './Icons';
 import MenuButton from './MenuButton';
 import DialogAlert from './DialogAlert';
-
+import TaskStatus from './TaskStatus';
 
 const TaskCard = ({ task, setTasks }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -34,8 +33,8 @@ const TaskCard = ({ task, setTasks }) => {
          day: 'numeric',
       });
 
-   const updateStatus = async (id, value) => {
-      const data = await updateTaskStatus(id, value);
+   const updateStatus = async (id, status) => {
+      const data = await updateTaskStatus(id, status);
 
       if (!data.success) {
          toast.error('Something went wrong. Please try again later.', {
@@ -45,7 +44,7 @@ const TaskCard = ({ task, setTasks }) => {
          return;
       }
 
-      setTasks((prev) => prev.map((task) => (task._id === id ? { ...task, completed: value } : task)));
+      setTasks((prev) => prev.map((task) => (task._id === id ? { ...task, status } : task)));
    };
 
    const handleEdit = (task) => {
@@ -80,12 +79,8 @@ const TaskCard = ({ task, setTasks }) => {
             isHovered ? 'bg-[#27374f]' : 'bg-[#212e42]'
          }`}
       >
-         {task.completed && (
-            <div className="flex justify-center items-center w-10 sm:w-16 bg-green-600 rounded-l-md">
-               <CheckIcon className="w-5 h-5 md:w-10 md:h-10 text-light" />
-            </div>
-         )}
-         
+         <TaskStatus status={task.status} onUpdated={(status) => updateStatus(task._id, status)} />
+
          <div className="w-full flex justify-between px-5 py-4">
             <div
                onClick={() => handleView(task)}
@@ -102,17 +97,15 @@ const TaskCard = ({ task, setTasks }) => {
             </div>
             <div className="absolute top-4 right-3 text-sm sm:text-base basis-12 sm:basis-44 flex flex-col justify-between items-end">
                <MenuButton
-                  onCompleted={() => updateStatus(task._id, !task.completed)}
                   onEdit={() => handleEdit(task)}
                   onDelete={() => setIsAlertOpen(true)}
-                  isCompleted={task.completed}
                />
             </div>
          </div>
-         
+
          {/* Show toast */}
          <ToastContainer />
-         
+
          {/* Show alert when deleting */}
          {isAlertOpen && (
             <DialogAlert
@@ -134,6 +127,7 @@ TaskCard.propTypes = {
       description: PropTypes.string.isRequired,
       createdAt: PropTypes.string.isRequired,
       completed: PropTypes.bool.isRequired,
+      status: PropTypes.string,
       dueDate: PropTypes.string,
    }).isRequired,
    setTasks: PropTypes.func.isRequired,

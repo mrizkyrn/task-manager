@@ -104,7 +104,7 @@ const Navbar = () => {
          </div>
 
          {/* Mobile Navbar */}
-         <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between gap-2 sm:hidden h-20 px-5 pb-3 bg-dark border-t border-gray-700">
+         <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between gap-2 sm:hidden h-20 px-5 pb-3 bg-dark border-t border-gray-700 z-10">
             {NavbarItems().map(({ name, icon, path }) => (
                <NavLink
                   key={name}

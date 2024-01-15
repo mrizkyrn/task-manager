@@ -12,11 +12,6 @@ const TaskInfo = ({ task }) => {
       const getUsers = async () => {
          const data = await getAllCollaboratorUsers(task._id);
 
-         if (!data.success) {
-            console.log(data.message);
-            return;
-         }
-
          setUsers(data.data);
       };
 

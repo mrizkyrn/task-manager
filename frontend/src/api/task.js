@@ -60,9 +60,9 @@ export const deleteTask = async (id) => {
    }
 };
 
-export const updateTaskStatus = async (id, completed) => {
+export const updateTaskStatus = async (id, status) => {
    try {
-      const response = await api.patch(`/${id}`, { completed });
+      const response = await api.patch(`/${id}`, { status });
       console.log(response.data);
       return response.data;
    } catch (error) {

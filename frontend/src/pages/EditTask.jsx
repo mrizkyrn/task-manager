@@ -24,6 +24,7 @@ const EditTask = () => {
       description: task.description,
       notes: task.notes,
       priority: task.priority,
+      status: task.status,
       completed: task.completed,
       dueDate: ISOtoLocalDate(task.dueDate),
    };
@@ -150,6 +151,24 @@ const EditTask = () => {
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
                   <option value="low">Low</option>
+               </select>
+            </div>
+
+            {/* Status */}
+            <div className="flex flex-col gap-2">
+               <label htmlFor="status" className="text-gray-200">
+                  Status
+               </label>
+               <select
+                  name="status"
+                  id="status"
+                  className="bg-[#212e42] px-5 py-3 rounded-md text-gray-200"
+                  onChange={(e) => setForm({ ...form, status: e.target.value })}
+                  value={form.status}
+               >
+                  <option value="not-started">Not Started</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
                </select>
             </div>
 

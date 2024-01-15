@@ -3,12 +3,13 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const Task = require('../../models/task.model');
 
 class TasksService {
-   static async createTask({ title, description, notes, priority, dueDate, creator }) {
+   static async createTask({ title, description, notes, priority, status, dueDate, creator }) {
       const task = new Task({
          title,
          description,
          notes,
          priority,
+         status,
          dueDate,
          creator,
       });
@@ -38,9 +39,8 @@ class TasksService {
       return task;
    }
 
-   static async updateTask(id, { title, description, notes, priority, dueDate }) {
-      console.log('updateTask');
-      const result = await Task.updateOne({ _id: id }, { title, description, notes, priority, dueDate });
+   static async updateTask(id, { title, description, notes, priority, status, dueDate }) {
+      const result = await Task.updateOne({ _id: id }, { title, description, notes, priority, status, dueDate });
 
       if (!result.modifiedCount) throw new InvariantError('Failed to update task');
       return result;
@@ -51,11 +51,11 @@ class TasksService {
       if (!result) throw new InvariantError('Failed to delete task');
    }
 
-   static async updateTaskStatus(taskId, completed) {
+   static async updateTaskStatus(taskId, status) {
       const task = await Task.findById(taskId);
 
       if (!task) throw new NotFoundError('Task not found');
-      task.completed = completed;
+      task.status = status;
       await task.save();
    }
 
@@ -89,7 +89,6 @@ class TasksService {
 
    static async verifyTaskAccess(taskId, userId) {
       const task = await Task.findById(taskId);
-      console.log(task);
       if (task.creator.toString() !== userId && task.collaborators.indexOf(userId) === -1) {
          throw new InvariantError('You are not authorized to do this');
       }

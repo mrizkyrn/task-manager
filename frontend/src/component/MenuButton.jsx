@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
-import { CircleCheckIcon, DeleteIcon, EditIcon, KebabMenuIcon } from './Icons';
+import { DeleteIcon, EditIcon, KebabMenuIcon } from './Icons';
 
-const MenuButton = ({ onCompleted, onEdit, onDelete, isCompleted }) => {
+const MenuButton = ({ onEdit, onDelete }) => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);
    const menuRef = useRef();
    const buttonRef = useRef();
@@ -42,15 +42,6 @@ const MenuButton = ({ onCompleted, onEdit, onDelete, isCompleted }) => {
          {isMenuOpen && (
             <div ref={menuRef} className="absolute -top-2 right-10 w-48 bg-dark rounded-md shadow-md">
                <button
-                  onClick={() => onCompleted() && setIsMenuOpen(false)}
-                  className="w-full flex items-center px-5 py-2 text-left rounded-t-md text-gray-200 hover:bg-gray-700"
-               >
-                  <span className="mr-3">
-                     <CircleCheckIcon className="w-5 h-5" />
-                  </span>
-                  {isCompleted ? 'Mark as Uncompleted' : 'Mark as Completed'}
-               </button>
-               <button
                   onClick={onEdit}
                   className="w-full flex px-5 py-2 text-left rounded-t-md text-gray-200 hover:bg-gray-700"
                >
@@ -77,8 +68,6 @@ const MenuButton = ({ onCompleted, onEdit, onDelete, isCompleted }) => {
 MenuButton.propTypes = {
    onEdit: PropTypes.func.isRequired,
    onDelete: PropTypes.func.isRequired,
-   onCompleted: PropTypes.func.isRequired,
-   isCompleted: PropTypes.bool.isRequired,
 };
 
 export default MenuButton;

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { signoutStart, signoutSuccess, signoutFailure } from '../redux/user/userSlice';
-import { signout } from '../api/auth';
-import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from './Icons';
-import DialogAlert from './DialogAlert';
-import UserProfile from './UserProfile';
+import { signoutStart, signoutSuccess, signoutFailure } from '../../redux/user/userSlice';
+import { signout } from '../../api/auth';
+import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from '../icons/Icons';
+import DialogAlert from '../helpers/DialogAlert';
+import UserProfile from '../users/UserProfile';
 
 const NavbarItems = () => [
    {

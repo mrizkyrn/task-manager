@@ -4,7 +4,7 @@ import { signupStart, signupSuccess, signupFailure } from '../redux/user/userSli
 import { Link, useNavigate } from 'react-router-dom';
 import { signup } from '../api/auth';
 import { ToastContainer, toast } from 'react-toastify';
-import Button from '../component/Button';
+import Button from '../component/buttons/MainButton';
 
 const SignUp = () => {
    const [formData, setFormData] = useState({

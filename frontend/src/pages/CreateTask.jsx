@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { createTask } from '../api/task';
-import { AddIcon } from '../component/Icons';
-import Container from '../component/Container';
-import Button from '../component/Button';
-import NoteInput from '../component/NoteInput';
-import HeaderTitle from '../component/HeaderTitle';
+import { AddIcon } from '../component/icons/Icons';
+import Container from '../component/layouts/Container';
+import MainButton from '../component/buttons/MainButton';
+import NoteInput from '../component/helpers/NoteInput';
+import HeaderTitle from '../component/layouts/HeaderTitle';
 
 const initialForm = {
    title: '',
@@ -183,9 +183,9 @@ const CreateTask = () => {
             </div>
 
             {/* Submit */}
-            <Button className="w-full mt-5" type="submit">
+            <MainButton className="w-full mt-5" type="submit">
                Create Task
-            </Button>
+            </MainButton>
          </form>
 
          <ToastContainer />

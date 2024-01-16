@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { deleteTask, updateTaskStatus } from '../api/task';
-import MenuButton from './MenuButton';
-import DialogAlert from './DialogAlert';
+import { deleteTask, updateTaskStatus } from '../../api/task';
+import MenuButton from '../buttons/MenuButton';
+import DialogAlert from '../helpers/DialogAlert';
 import TaskStatus from './TaskStatus';
 
 const TaskCard = ({ task, setTasks }) => {
@@ -96,10 +96,7 @@ const TaskCard = ({ task, setTasks }) => {
                </div>
             </div>
             <div className="absolute top-4 right-3 text-sm sm:text-base basis-12 sm:basis-44 flex flex-col justify-between items-end">
-               <MenuButton
-                  onEdit={() => handleEdit(task)}
-                  onDelete={() => setIsAlertOpen(true)}
-               />
+               <MenuButton onEdit={() => handleEdit(task)} onDelete={() => setIsAlertOpen(true)} />
             </div>
          </div>
 
@@ -126,7 +123,6 @@ TaskCard.propTypes = {
       priority: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       createdAt: PropTypes.string.isRequired,
-      completed: PropTypes.bool.isRequired,
       status: PropTypes.string,
       dueDate: PropTypes.string,
    }).isRequired,

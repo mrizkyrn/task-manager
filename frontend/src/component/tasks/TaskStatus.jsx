@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
-import { CircleCheckIcon, NotStartedIcon, ProgressIcon } from './Icons';
+import { CircleCheckIcon, NotStartedIcon, ProgressIcon } from '../icons/Icons';
 import { useEffect, useRef, useState } from 'react';
 
 const statusConfig = {
    'not-started': {
-      className: 'bg-gray-600',
+      className: 'bg-gray-600 hover:bg-gray-700',
       icon: <NotStartedIcon className="w-5 h-5 sm:w-8 sm:h-8 text-light" />,
    },
    'in-progress': {
-      className: 'bg-amber-800',
+      className: 'bg-amber-800 hover:bg-amber-900',
       icon: <ProgressIcon className="w-5 h-5 sm:w-8 sm:h-8 text-light" />,
    },
    completed: {
-      className: 'bg-green-800',
+      className: 'bg-green-800 hover:bg-green-900',
       icon: <CircleCheckIcon className="w-5 h-5 sm:w-8 sm:h-8 text-light" />,
    },
 };
@@ -50,7 +50,9 @@ const TaskStatus = ({ status, onUpdated }) => {
       <div
          ref={buttonRef}
          onClick={() => setIsMenuOpen((prev) => !prev)}
-         className={`relative flex justify-center items-center w-10 sm:w-16 rounded-l-md ${className || ''}`}
+         className={`relative flex justify-center items-center w-10 sm:w-16 rounded-l-md cursor-pointer ${
+            className || ''
+         }`}
       >
          {icon}
 

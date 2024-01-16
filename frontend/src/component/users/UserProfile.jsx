@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { editUserStart, editUsernameSuccess, editAvatarSuccess, editUserFailure } from '../redux/user/userSlice';
-import { changeUsername, changeAvatar, deleteUser } from '../api/user';
-import { LogOutIcon, XMarkIcon } from './Icons';
-import Button from './Button';
-import DialogAlert from './DialogAlert';
+import { editUserStart, editUsernameSuccess, editAvatarSuccess, editUserFailure } from '../../redux/user/userSlice';
+import { changeUsername, changeAvatar, deleteUser } from '../../api/user';
+import { LogOutIcon, XMarkIcon } from '../icons/Icons';
+import MainButton from '../buttons/MainButton';
+import DialogAlert from '../helpers/DialogAlert';
 import SelectAvatar from './SelectAvatar';
 
 const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
@@ -42,7 +42,7 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
 
       if (newUsername !== currentUser.username) {
          const data = await changeUsername(currentUser._id, newUsername);
-         
+
          if (!data.success) {
             dispatch(editUserFailure(data.message));
             toast.error(data.message, {
@@ -116,29 +116,29 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
                   />
                </div>
                <div className="w-full flex justify-center items-center gap-5 mt-16">
-                  <Button
+                  <MainButton
                      className="w-full text-sm sm:text-base disabled:bg-gray-700 disabled:hover:bg-gray-700"
                      onClick={handleSaveChanges}
                      disabled={!hasChanged}
                   >
                      Save Changes
-                  </Button>
+                  </MainButton>
 
-                  <Button
+                  <MainButton
                      className="w-full text-sm sm:text-base flex justify-center items-center"
                      onClick={onAlertLogout}
                   >
                      <LogOutIcon className="w-5 h-5 mr-3" />
                      Logout
-                  </Button>
+                  </MainButton>
                </div>
 
-               <Button
+               <MainButton
                   className="w-full text-sm sm:text-base flex justify-center items-center mt-5 !bg-red-800"
                   onClick={() => setIsAlertOpen(true)}
                >
                   Delete Account
-               </Button>
+               </MainButton>
             </div>
          )}
 

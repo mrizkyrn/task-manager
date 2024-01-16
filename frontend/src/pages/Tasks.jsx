@@ -1,17 +1,25 @@
-import { useState } from 'react';
-import { Link, useLoaderData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getUserTasks } from '../api/task';
-import { AddIcon } from '../component/Icons';
-import Container from '../component/Container';
-import TaskCard from '../component/TaskCard';
-
-export async function loader() {
-   const data = await getUserTasks();
-   return data.data.tasks;
-}
+import { AddIcon } from '../component/icons/Icons';
+import Container from '../component/layouts/Container';
+import TaskCard from '../component/tasks/TaskCard';
+import TaskCardSkeleton from '../component/skeletons/taskCardSkeleton';
 
 const Tasks = () => {
-   const [tasks, setTasks] = useState(useLoaderData());
+   const [tasks, setTasks] = useState([]);
+   const [loading, setLoading] = useState(true);
+
+   useEffect(() => {
+      const getTasks = async () => {
+         const data = await getUserTasks();
+
+         setTasks(data.data.tasks);
+         setLoading(false);
+      };
+
+      getTasks();
+   }, []);
 
    return (
       <Container>
@@ -30,7 +38,9 @@ const Tasks = () => {
          </div>
 
          <div className="flex flex-col gap-7 mt-10">
-            {tasks.length > 0 ? (
+            {loading ? (
+               tasks.map((task) => <TaskCardSkeleton key={task._id} />)
+            ) : tasks.length > 0 ? (
                tasks.map((task) => <TaskCard key={task._id} task={task} setTasks={setTasks} />)
             ) : (
                <p className="text-sm sm:text-base text-gray-400 text-center mt-10">

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import BackButton from './BackButton';
+import BackButton from '../buttons/BackButton';
 
 const HeaderTitle = ({ title, backTo, relativeTo }) => {
    return (

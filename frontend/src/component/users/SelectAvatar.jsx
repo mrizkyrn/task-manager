@@ -1,19 +1,9 @@
 import PropTypes from 'prop-types';
-import { XMarkIcon } from './Icons';
+import { XMarkIcon } from '../icons/Icons';
 
-const avatars = [
-   'avatar-1',
-   'avatar-2',
-   'avatar-3',
-   'avatar-4',
-   'avatar-5',
-   'avatar-6',
-   'avatar-7',
-   'avatar-8',
-];
+const avatars = ['avatar-1', 'avatar-2', 'avatar-3', 'avatar-4', 'avatar-5', 'avatar-6', 'avatar-7', 'avatar-8'];
 
-const SelectAvatar = ({onClose, onSelected}) => {
-
+const SelectAvatar = ({ onClose, onSelected }) => {
    return (
       <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
          <div className="relative flex flex-col justify-center items-center max-w-md bg-semiDark rounded-md shadow-lg py-8 px-5">

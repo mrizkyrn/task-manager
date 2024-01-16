@@ -67,7 +67,7 @@ const getTaskById = async (req, res, next) => {
 
 const updateTask = async (req, res, next) => {
    const { id: taskId } = req.params;
-   const { title, description, notes, priority, status, dueDate, completed } = req.body;
+   const { title, description, notes, priority, status, dueDate } = req.body;
    const { id: userId } = req.user;
 
    try {
@@ -82,7 +82,6 @@ const updateTask = async (req, res, next) => {
          priority,
          status,
          dueDate,
-         completed,
       });
       res.status(200).send({ success: true, message: 'Task updated successfully' });
    } catch (error) {

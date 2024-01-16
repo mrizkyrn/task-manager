@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
-import Container from '../component/Container';
-import HeaderTitle from '../component/HeaderTitle';
-import TaskInfo from '../component/TaskInfo';
+import Container from '../component/layouts/Container';
+import HeaderTitle from '../component/layouts/HeaderTitle';
+import TaskInfo from '../component/tasks/TaskInfo';
 
 const DetailTask = () => {
    const location = useLocation();
@@ -17,11 +17,8 @@ const DetailTask = () => {
          <HeaderTitle title={task.title} />
 
          <div className="flex flex-col sm:flex-row justify-between items-start gap-10 mt-10 leading-7">
-            <div className='w-full'>
-               <p className="text-[#a7acb5] whitespace-pre-line">
-                  {task.description}
-               </p>
-
+            <div className="w-full">
+               <p className="text-[#a7acb5] whitespace-pre-line">{task.description}</p>
 
                {task.notes.length > 0 && (
                   <>
@@ -40,7 +37,7 @@ const DetailTask = () => {
                   Due: {dueDate} {task.dueTime && task.dueTime}
                </p>
             </div>
-            <div className='w-full sm:basis-2/3 md:max-w-sm'>
+            <div className="w-full sm:basis-2/3 md:max-w-sm">
                <TaskInfo task={task} />
             </div>
          </div>

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { XMarkIcon } from './Icons';
+import { XMarkIcon } from '../icons/Icons';
 
 const NoteInput = ({ index, form, setForm }) => {
    return (

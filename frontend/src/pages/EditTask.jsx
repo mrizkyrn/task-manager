@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { updateTask } from '../api/task';
-import { AddIcon } from '../component/Icons';
-import Container from '../component/Container';
-import Button from '../component/Button';
-import NoteInput from '../component/NoteInput';
-import HeaderTitle from '../component/HeaderTitle';
+import { AddIcon } from '../component/icons/Icons';
+import Container from '../component/layouts/Container';
+import MainButton from '../component/buttons/MainButton';
+import NoteInput from '../component/helpers/NoteInput';
+import HeaderTitle from '../component/layouts/HeaderTitle';
 
 const ISOtoLocalDate = (date) => {
    if (!date) return '';
@@ -25,7 +25,6 @@ const EditTask = () => {
       notes: task.notes,
       priority: task.priority,
       status: task.status,
-      completed: task.completed,
       dueDate: ISOtoLocalDate(task.dueDate),
    };
 
@@ -59,7 +58,7 @@ const EditTask = () => {
          toast.error('Title cannot be empty.');
          return false;
       }
-      
+
       // convert the date to ISO format
       if (form.dueDate) form.dueDate = new Date(form.dueDate).toISOString();
 
@@ -188,9 +187,9 @@ const EditTask = () => {
             </div>
 
             {/* Submit */}
-            <Button className="w-full mt-5" type="submit">
+            <MainButton className="w-full mt-5" type="submit">
                Save Task
-            </Button>
+            </MainButton>
          </form>
 
          <ToastContainer />

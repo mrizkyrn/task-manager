@@ -1,4 +1,4 @@
-import Container from '../component/Container';
+import Container from '../component/layouts/Container';
 
 const Home = () => {
    return (

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { addUserToCollaborators, removeUserFromCollaborators, getAllCollaboratorUsers } from '../api/task';
-import { PlusIcon } from './Icons';
-import User from './User';
+import { addUserToCollaborators, removeUserFromCollaborators, getAllCollaboratorUsers } from '../../api/task';
+import { PlusIcon } from '../icons/Icons';
+import User from '../users/User';
 
 const TaskInfo = ({ task }) => {
    const [users, setUsers] = useState([]);

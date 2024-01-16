@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
-import { DeleteIcon, EditIcon, KebabMenuIcon } from './Icons';
+import { DeleteIcon, EditIcon, KebabMenuIcon } from '../icons/Icons';
 
 const MenuButton = ({ onEdit, onDelete }) => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);

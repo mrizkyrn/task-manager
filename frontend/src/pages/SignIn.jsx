@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signinStart, signinSuccess, signinFailure } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { signin } from '../api/auth';
-import Button from '../component/Button';
+import MainButton from '../component/buttons/MainButton';
 
 const SignIn = () => {
    const [formData, setFormData] = useState({});
@@ -80,9 +80,9 @@ const SignIn = () => {
                onChange={handleChange}
             />
             {/* Submit */}
-            <Button className="w-full" type="submit" disabled={loading}>
+            <MainButton className="w-full" type="submit" disabled={loading}>
                {loading ? 'Loading...' : 'Sign In'}
-            </Button>
+            </MainButton>
          </form>
 
          <div className="mt-5">

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { BackIcon } from './Icons';
+import { BackIcon } from '../icons/Icons.jsx';
 
 const BackButton = ({ to = '..', relative = 'path' }) => {
    return (

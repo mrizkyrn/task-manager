@@ -19,9 +19,16 @@ const userSchema = new mongoose.Schema(
       },
       tasks: [
          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Task',
-         },
+            task: {
+               type: mongoose.Schema.Types.ObjectId,
+               ref: 'Task',
+            },
+            role: {
+               type: String,
+               enum: ['admin', 'collaborator', 'viewer'],
+               default: 'collaborator',
+            },
+         }
       ],
    },
    { timestamps: true },

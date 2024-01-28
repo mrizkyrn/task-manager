@@ -24,17 +24,17 @@ const CreateTask = () => {
    };
 
    const handleSubmit = async (e) => {
-      console.log(form);
       e.preventDefault();
-
+      
       if (!validateForm()) return;
-
+      
       // remove empty notes
       const notes = form.notes.filter((note) => note !== '');
-
+      
       // convert the date to ISO format
       if (form.dueDate) form.dueDate = new Date(form.dueDate).toISOString();
-
+      console.log(form);
+      
       const data = await createTask({ ...form, notes });
 
       if (!data.success) {

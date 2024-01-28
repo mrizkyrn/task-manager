@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { deleteTask, updateTaskStatus } from '../../api/task';
+import { ISOtoReadable, ISOtoTime, overdueISOCheck } from '../../utils/date';
 import MenuButton from '../buttons/MenuButton';
 import DialogAlert from '../helpers/DialogAlert';
 import TaskStatus from './TaskStatus';
@@ -24,14 +25,6 @@ const TaskCard = ({ task, setTasks }) => {
             return 'bg-gray-700';
       }
    };
-
-   const dueDate =
-      task.dueDate &&
-      new Date(task.dueDate).toLocaleDateString('en-US', {
-         year: 'numeric',
-         month: 'long',
-         day: 'numeric',
-      });
 
    const updateStatus = async (id, status) => {
       const data = await updateTaskStatus(id, status);
@@ -92,7 +85,22 @@ const TaskCard = ({ task, setTasks }) => {
                <p className="text-sm md:text-base leading-6 line-clamp-1 text-gray-300">{task.description}</p>
                <div className="flex justify-between items-center">
                   <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
-                  <p className="text-sm text-gray-400 text-right">{dueDate}</p>
+                  {task.dueDate && (
+                     <p
+                        className={`text-xs text-right
+                           ${
+                              task.status === 'completed'
+                                 ? 'line-through text-gray-400'
+                                 : overdueISOCheck(task.dueDate)
+                                 ? 'text-red-700'
+                                 : 'text-gray-400'
+                           }
+                        `}
+                     >
+                        {ISOtoReadable(task.dueDate)}
+                        <span className="hidden sm:inline"> {ISOtoTime(task.dueDate)}</span>
+                     </p>
+                  )}
                </div>
             </div>
             <div className="absolute top-4 right-3 text-sm sm:text-base basis-12 sm:basis-44 flex flex-col justify-between items-end">

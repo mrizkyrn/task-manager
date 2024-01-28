@@ -38,6 +38,8 @@ const getTasks = async (req, res, next) => {
          message: 'Tasks fetched successfully',
          data: {
             totalTasks: tasks.totalTasks,
+            notStartedTasks: tasks.notStartedTasks,
+            inProgressTasks: tasks.inProgressTasks,
             completedTasks: tasks.completedTasks,
             overdueTasks: tasks.overdueTasks,
             tasks: tasks.tasks,
@@ -173,7 +175,7 @@ const addUserToCollaborators = async (req, res, next) => {
 
       res.status(200).send({
          success: true,
-         message: 'User added successfully',
+         message: `${user.username} added to task`,
          data: { _id: user._id, username: user.username, avatar: user.avatar },
       });
    } catch (error) {

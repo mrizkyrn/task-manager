@@ -2,15 +2,12 @@ import { useLocation } from 'react-router-dom';
 import Container from '../component/layouts/Container';
 import HeaderTitle from '../component/layouts/HeaderTitle';
 import TaskInfo from '../component/tasks/TaskInfo';
+import { ISOtoDateTime, overdueISOCheck } from '../utils/date';
 
 const DetailTask = () => {
    const location = useLocation();
    const task = location.state.task;
-   const dueDate = new Date(task.dueDate).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-   });
+   const isOverdue = overdueISOCheck(task.dueDate);
 
    return (
       <Container>
@@ -33,8 +30,10 @@ const DetailTask = () => {
                )}
 
                <p className="text-[#a7acb5] mt-2">Priority: {task.priority}</p>
-               <p className="text-[#a7acb5] mt-2">
-                  Due: {dueDate} {task.dueTime && task.dueTime}
+               <p className="text-[#a7acb5] mt-2">Status: {task.status}</p>
+               <p className={`mt-2 ${isOverdue ? 'text-red-700' : 'text-[#a7acb5]'}`}>
+                  {isOverdue ? 'Overdue: ' : 'Due: '}
+                  {ISOtoDateTime(task.dueDate)}
                </p>
             </div>
             <div className="w-full sm:basis-2/3 md:max-w-sm">

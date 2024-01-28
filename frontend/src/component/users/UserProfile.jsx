@@ -4,10 +4,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { editUserStart, editUsernameSuccess, editAvatarSuccess, editUserFailure } from '../../redux/user/userSlice';
 import { changeUsername, changeAvatar, deleteUser } from '../../api/user';
-import { LogOutIcon, XMarkIcon } from '../icons/Icons';
+import { LogOutIcon } from '../icons/Icons';
 import MainButton from '../buttons/MainButton';
 import DialogAlert from '../helpers/DialogAlert';
 import SelectAvatar from './SelectAvatar';
+import Modal from '../helpers/Modal';
 
 const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
    const { currentUser } = useSelector((state) => state.user);
@@ -94,53 +95,46 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
    };
 
    return (
-      <div className="fixed px-5 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
-         {currentUser && (
-            <div className="relative w-full flex flex-col justify-center items-center max-w-md bg-semiDark rounded-md shadow-lg py-8 px-5">
-               <div className="absolute top-6 right-3">
-                  <XMarkIcon className="w-7 h-7 text-light cursor-pointer" onClick={onClose} />
-               </div>
-               <img
-                  className="object-cover w-20 h-20 md:w-24 md:h-24 rounded-full"
-                  src={`/avatars/${newAvatar}.jpg`}
-                  alt="avatar"
-                  onClick={() => setIsSelectAvatarOpen(true)}
-               />
-               <div className="flex items-center gap-3">
-                  <input
-                     type="text"
-                     autoComplete="off"
-                     className="bg-semiDark text-light md:text-lg font-semibold text-center w-full rounded-md mt-4"
-                     defaultValue={currentUser.username}
-                     onChange={handleUsernameChange}
-                  />
-               </div>
-               <div className="w-full flex justify-center items-center gap-5 mt-16">
-                  <MainButton
-                     className="w-full text-sm sm:text-base disabled:bg-gray-700 disabled:hover:bg-gray-700"
-                     onClick={handleSaveChanges}
-                     disabled={!hasChanged}
-                  >
-                     Save Changes
-                  </MainButton>
+      <Modal isOpen={true} onClose={onClose}>
+         <img
+            className="object-cover w-20 h-20 md:w-24 md:h-24 rounded-full"
+            src={`/avatars/${newAvatar}.jpg`}
+            alt="avatar"
+            onClick={() => setIsSelectAvatarOpen(true)}
+         />
+         <div className="flex items-center gap-3">
+            <input
+               type="text"
+               autoComplete="off"
+               className="bg-semiDark text-light md:text-lg font-semibold text-center w-full rounded-md mt-4"
+               defaultValue={currentUser.username}
+               onChange={handleUsernameChange}
+            />
+         </div>
+         <div className="w-full flex justify-center items-center gap-5 mt-16">
+            <MainButton
+               className="w-full text-sm sm:text-base disabled:bg-gray-700 disabled:hover:bg-gray-700"
+               onClick={handleSaveChanges}
+               disabled={!hasChanged}
+            >
+               Save Changes
+            </MainButton>
 
-                  <MainButton
-                     className="w-full text-sm sm:text-base flex justify-center items-center"
-                     onClick={onAlertLogout}
-                  >
-                     <LogOutIcon className="w-5 h-5 mr-3" />
-                     Logout
-                  </MainButton>
-               </div>
+            <MainButton
+               className="w-full text-sm sm:text-base flex justify-center items-center"
+               onClick={onAlertLogout}
+            >
+               <LogOutIcon className="w-5 h-5 mr-3" />
+               Logout
+            </MainButton>
+         </div>
 
-               <MainButton
-                  className="w-full text-sm sm:text-base flex justify-center items-center mt-5 !bg-red-800"
-                  onClick={() => setIsAlertOpen(true)}
-               >
-                  Delete Account
-               </MainButton>
-            </div>
-         )}
+         <MainButton
+            className="w-full text-sm sm:text-base flex justify-center items-center mt-5 !bg-red-800"
+            onClick={() => setIsAlertOpen(true)}
+         >
+            Delete Account
+         </MainButton>
 
          {/* Show toast when username is updated */}
          <ToastContainer />
@@ -159,7 +153,7 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
          {isSelectAvatarOpen && (
             <SelectAvatar onClose={() => setIsSelectAvatarOpen(false)} onSelected={handleAvatarChange} />
          )}
-      </div>
+      </Modal>
    );
 };
 

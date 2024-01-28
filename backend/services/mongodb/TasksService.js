@@ -26,10 +26,12 @@ class TasksService {
       }).populate('creator', 'username avatar');
 
       const totalTasks = tasks.length;
-      const completedTasks = tasks.filter((task) => task.completed).length;
+      const notStartedTasks = tasks.filter((task) => task.status === 'not-started').length;
+      const inProgressTasks = tasks.filter((task) => task.status === 'in-progress').length;
+      const completedTasks = tasks.filter((task) => task.status === 'completed').length;
       const overdueTasks = tasks.filter((task) => task.dueDate !== null && task.dueDate < Date.now()).length;
 
-      return { totalTasks, completedTasks, overdueTasks, tasks };
+      return { totalTasks, notStartedTasks, inProgressTasks, completedTasks, overdueTasks, tasks };
    }
 
    static async getTaskById(id) {

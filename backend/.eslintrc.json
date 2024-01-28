@@ -13,6 +13,7 @@
         "no-console": "off",
         "linebreak-style": ["error", "windows"],
         "import/extensions": "off",
+        "comma-dangle": "off",
         "indent": ["error", 3],
         "no-underscore-dangle": "off",
         "consistent-return": "off",

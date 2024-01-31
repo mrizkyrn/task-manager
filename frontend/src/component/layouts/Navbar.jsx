@@ -19,6 +19,11 @@ const NavbarItems = () => [
       path: '/tasks',
    },
    {
+      name: 'Important',
+      icon: <TaskIcon className="w-5 h-5" />,
+      path: '/important',
+   },
+   {
       name: 'Group Tasks',
       icon: <GroupTasksIcon className="w-5 h-5" />,
       path: '/group-tasks',

@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound.jsx';
 import MainLayout from './component/layouts/MainLayout.jsx';
 import Home from './pages/Home.jsx';
 import Tasks from './pages/Tasks.jsx';
+import Important from './pages/Important.jsx';
 import CreateTask from './pages/CreateTask.jsx';
 import EditTask from './pages/EditTask.jsx';
 import DetailTask from './pages/DetailTask.jsx';
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
          {
             path: '/tasks',
             element: <Tasks />,
+         },
+         {
+            path: '/important',
+            element: <Important />,
          },
          {
             path: '/tasks/:id',

@@ -15,6 +15,8 @@ const TaskCard = ({ task, setTasks }) => {
 
    const priorityColor = () => {
       switch (task.priority) {
+         case 'important':
+            return 'bg-blue-700';
          case 'high':
             return 'bg-red-700';
          case 'medium':
@@ -84,7 +86,13 @@ const TaskCard = ({ task, setTasks }) => {
                <h1 className="w-10/12 text-xl md:text-2xl line-clamp-1 font-bold text-gray-200">{task.title}</h1>
                <p className="text-sm md:text-base leading-6 line-clamp-1 text-gray-300">{task.description}</p>
                <div className="flex justify-between items-center">
-                  <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
+                  {task.priority === 'important' ? (
+                     <p className={`w-24 text-[12px] text-center text-white rounded-md ${priorityColor()}`}>IMPORTANT</p>
+                  ) : (
+                     <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>
+                        {task.priority}
+                     </p>
+                  )}
                   {task.dueDate && (
                      <p
                         className={`text-xs text-right

@@ -76,7 +76,9 @@ class UsersService {
    static async removeTaskFromUser(id, taskId) {
       const user = await User.findById(id);
       user.tasks.pull(taskId);
-      await user.save();
+
+      const result = await user.save();
+      if (!result) throw new InvariantError('Failed to remove task from user');
    }
 
    static async verifyUser(id) {

@@ -19,19 +19,12 @@ const userSchema = new mongoose.Schema(
       },
       tasks: [
          {
-            task: {
-               type: mongoose.Schema.Types.ObjectId,
-               ref: 'Task',
-            },
-            role: {
-               type: String,
-               enum: ['admin', 'collaborator', 'viewer'],
-               default: 'collaborator',
-            },
-         }
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Task',
+         },
       ],
    },
-   { timestamps: true },
+   { timestamps: true }
 );
 
 const User = mongoose.model('User', userSchema);

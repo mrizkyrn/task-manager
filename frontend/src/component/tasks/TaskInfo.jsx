@@ -1,25 +1,24 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { addUserToCollaborators, removeUserFromCollaborators, getAllCollaboratorUsers } from '../../api/task';
+import { addUserToAssignees, removeUserFromAssginees, getAllAssignedUsers } from '../../api/task';
 import { PlusIcon } from '../icons/Icons';
 import User from '../users/User';
 
 const TaskInfo = ({ task }) => {
-   const [users, setUsers] = useState([]);
+   const [assignedUsers, setAssignedUsers] = useState([]);
 
    useEffect(() => {
-      const getUsers = async () => {
-         const data = await getAllCollaboratorUsers(task._id);
-
-         setUsers(data.data);
+      const getAssignedUsers = async () => {
+         const data = await getAllAssignedUsers(task._id);
+         setAssignedUsers(data.data);
       };
 
-      if (task.collaborators.length > 0) getUsers();
-   }, [task._id, task.collaborators]);
+      if (task.assignees.length > 0) getAssignedUsers();
+   }, [task._id, task.assignees]);
 
    const handleAddUser = async () => {
-      const data = await addUserToCollaborators(task._id, '656ec69f26a5f1df7ea0736e');
+      const data = await addUserToAssignees(task._id, { id: '65be8664cd47fd11217162a1', role: 'viewer' });
 
       if (!data.success) {
          toast.error(data.message, {
@@ -29,14 +28,14 @@ const TaskInfo = ({ task }) => {
          return;
       }
 
-      setUsers((prev) => [...prev, data.data]);
+      setAssignedUsers((prev) => [...prev, data.data]);
       toast.success(`${data.data.username} added to collaborators.`, {
          theme: 'colored',
       });
    };
 
    const handleRemoveUser = async (userId) => {
-      const data = await removeUserFromCollaborators(task._id, userId);
+      const data = await removeUserFromAssginees(task._id, userId);
 
       if (!data.success) {
          toast.error(data.message, {
@@ -46,7 +45,7 @@ const TaskInfo = ({ task }) => {
          return;
       }
 
-      setUsers((prev) => prev.filter((user) => user._id !== userId));
+      setAssignedUsers((prev) => prev.filter((user) => user._id !== userId));
       toast.success(data.message, {
          theme: 'colored',
       });
@@ -67,14 +66,16 @@ const TaskInfo = ({ task }) => {
    return (
       <div className="w-full flex flex-col justify-start items-start gap-5 p-5 sm:p-7 rounded-xl bg-dark/50">
          <div>
-            <p className="font-semibold text-gray-300 mb-3">Created by</p>
-            <User user={task.creator} onRemove={handleRemoveUser} />
+            <p className="font-semibold text-gray-300">Created by {task.creator.username}</p>
          </div>
 
+         <div className="w-full h-0.5 bg-gray-700" />
+
          <div>
-            <p className="font-semibold text-gray-300">Collaborators</p>
+            <p className="font-semibold text-gray-300">Assignees</p>
             <div className="flex flex-wrap items-center gap-3 mt-3">
-               {users && users.map((user) => <User key={user._id} user={user} onRemove={handleRemoveUser} />)}
+               {assignedUsers &&
+                  assignedUsers.map((user) => <User key={user._id} user={user} onRemove={handleRemoveUser} />)}
                <button
                   onClick={handleAddUser}
                   className="flex justify-center items-center w-12 h-12 bg-gray-700 rounded-full cursor-pointer hover:bg-gray-600"
@@ -90,7 +91,7 @@ const TaskInfo = ({ task }) => {
          </div>
 
          <div>
-            <p className="font-semibold text-gray-300">Updated at</p>
+            <p className="font-semibold text-gray-300">Last updated</p>
             <p className="mt-2 text-gray-400">{formatDate(task.updatedAt)}</p>
          </div>
 

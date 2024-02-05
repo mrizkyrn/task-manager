@@ -38,6 +38,10 @@ const router = createBrowserRouter([
             element: <DetailTask />,
          },
          {
+            path: '/important/:id',
+            element: <DetailTask />,
+         },
+         {
             path: '/tasks/create',
             element: <CreateTask />,
          },

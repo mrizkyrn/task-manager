@@ -1,9 +1,27 @@
+/* eslint-disable no-param-reassign */
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const AuthorizationError = require('../../exceptions/AuthorizationError');
 const Task = require('../../models/task.model');
 
 class TasksService {
-   static async createTask({ title, description, notes, priority, status, dueDate, creator }) {
+   static async _findTaskById(taskId) {
+      const task = await Task.findById(taskId);
+      if (!task) throw new NotFoundError('Task not found');
+
+      return task;
+   }
+
+   static async _getUserRole(taskId, userId) {
+      const task = await this._findTaskById(taskId);
+
+      const assignedUser = task.assignees.find((assignee) => assignee.user.toString() === userId.toString());
+      if (!assignedUser) throw new NotFoundError('You are not assigned to this task');
+
+      return assignedUser.role;
+   }
+
+   static async createTask({ title, description, notes, priority, status, dueDate, creator, assignees }) {
       const task = new Task({
          title,
          description,
@@ -12,17 +30,18 @@ class TasksService {
          status,
          dueDate,
          creator,
+         assignees,
       });
 
       const result = await task.save();
-
       if (!result) throw new InvariantError('Failed to create task');
+
       return result._id;
    }
 
    static async getTasks(userId) {
       const tasks = await Task.find({
-         $or: [{ creator: userId }, { collaborators: userId }],
+         $or: [{ creator: userId }, { 'assignees.user': userId }],
       }).populate('creator', 'username avatar');
 
       const totalTasks = tasks.length;
@@ -35,17 +54,14 @@ class TasksService {
    }
 
    static async getTaskById(id) {
-      const task = await Task.findById(id);
+      const task = this._findTaskById(id);
 
-      if (!task) throw new NotFoundError('Task not found');
       return task;
    }
 
    static async updateTask(id, { title, description, notes, priority, status, dueDate }) {
       const result = await Task.updateOne({ _id: id }, { title, description, notes, priority, status, dueDate });
-
       if (!result.modifiedCount) throw new InvariantError('Failed to update task');
-      return result;
    }
 
    static async deleteTaskById(id) {
@@ -54,53 +70,52 @@ class TasksService {
    }
 
    static async updateTaskStatus(taskId, status) {
-      const task = await Task.findById(taskId);
+      const task = await this._findTaskById(taskId);
 
-      if (!task) throw new NotFoundError('Task not found');
       task.status = status;
       await task.save();
    }
 
-   static async getAllCollaboratorUsers(taskId) {
-      const task = await Task.findById(taskId).populate('collaborators', 'username avatar');
+   static async getAssignees(taskId) {
+      const task = await Task.findById(taskId).populate('assignees.user', 'username avatar');
 
       if (!task) throw new NotFoundError('Task not found');
-      return task.collaborators;
+      return task.assignees;
    }
 
-   static async addUserToCollaborators(taskId, userId) {
-      const task = await Task.findById(taskId);
+   static async addAssignee(taskId, userId, role) {
+      const task = await this._findTaskById(taskId);
 
-      if (!task) throw new NotFoundError('Task not found');
-      task.collaborators.push(userId);
+      task.assignees = [...task.assignees, { user: userId, role }];
       await task.save();
    }
 
-   static async removeUserFromCollaborators(taskId, userId) {
-      const task = await Task.findById(taskId);
+   static async removeAssignee(taskId, userId) {
+      const task = await this._findTaskById(taskId);
 
-      if (!task) throw new NotFoundError('Task not found');
-      task.collaborators.pull(userId);
+      task.assignees = task.assignees.filter((assignee) => assignee.user.toString() !== userId.toString());
       await task.save();
    }
 
-   static async verifyTaskCreator(taskId, userId) {
-      const task = await Task.findById(taskId);
-      if (task.creator.toString() !== userId) throw new InvariantError('Only the creator can do this');
+   static async verifyTaskAdmin(taskId, userId) {
+      const role = await this._getUserRole(taskId, userId);
+      if (role !== 'admin') throw new AuthorizationError('User not authorized');
+   }
+
+   static async verifyTaskCollaborator(taskId, userId) {
+      const role = await this._getUserRole(taskId, userId);
+      if (role !== 'admin' && role !== 'collaborator') throw new AuthorizationError('User not authorized');
    }
 
    static async verifyTaskAccess(taskId, userId) {
-      const task = await Task.findById(taskId);
-      if (task.creator.toString() !== userId && task.collaborators.indexOf(userId) === -1) {
-         throw new InvariantError('You are not authorized to do this');
-      }
+      const role = await this._getUserRole(taskId, userId);
+      if (!role) throw new AuthorizationError('User not authorized');
    }
 
-   static async verifyAddCollaborator(taskId, userId) {
-      const task = await Task.findById(taskId);
+   static async verifyAddAssignee(taskId, userId) {
+      const task = await this._findTaskById(taskId);
 
-      if (!task) throw new NotFoundError('Task not found');
-      if (task.collaborators.indexOf(userId) !== -1) throw new InvariantError('User is already a collaborator');
+      if (task.assignees.indexOf(userId) !== -1) throw new InvariantError('User already assigned to task');
    }
 }
 

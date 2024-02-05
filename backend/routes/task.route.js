@@ -6,9 +6,9 @@ const {
    updateTask,
    getTaskById,
    updateTaskStatus,
-   getAllCollaboratorUsers,
-   addUserToCollaborators,
-   removeUserFromCollaborators,
+   getAssignees,
+   addAssignee,
+   removeAssignee,
 } = require('../controllers/task.controller.js');
 const verifyToken = require('../utils/userVerify.js');
 
@@ -20,8 +20,8 @@ router.get('/:id', verifyToken, getTaskById);
 router.put('/:id', verifyToken, updateTask);
 router.delete('/:id', verifyToken, deleteTask);
 router.patch('/:id', verifyToken, updateTaskStatus);
-router.get('/:id/users', verifyToken, getAllCollaboratorUsers);
-router.post('/:id/users', verifyToken, addUserToCollaborators);
-router.delete('/:id/users', verifyToken, removeUserFromCollaborators);
+router.get('/:id/users', verifyToken, getAssignees);
+router.post('/:id/users', verifyToken, addAssignee);
+router.delete('/:id/users', verifyToken, removeAssignee);
 
 module.exports = router;

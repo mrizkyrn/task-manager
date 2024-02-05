@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { deleteTask, updateTaskStatus } from '../../api/task';
 import { ISOtoReadable, ISOtoTime, overdueISOCheck } from '../../utils/date';
@@ -12,6 +12,7 @@ const TaskCard = ({ task, setTasks }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
    const [isHovered, setIsHovered] = useState(false);
    const navigate = useNavigate();
+   const currentLocation = useLocation().pathname.split('/')[1];
 
    const priorityColor = () => {
       switch (task.priority) {
@@ -65,7 +66,7 @@ const TaskCard = ({ task, setTasks }) => {
    };
 
    const handleView = (task) => {
-      navigate(`/tasks/${task._id}`, { state: { task } });
+      navigate(`/${currentLocation}/${task._id}`, { state: { task } });
    };
 
    return (
@@ -87,7 +88,9 @@ const TaskCard = ({ task, setTasks }) => {
                <p className="text-sm md:text-base leading-6 line-clamp-1 text-gray-300">{task.description}</p>
                <div className="flex justify-between items-center">
                   {task.priority === 'important' ? (
-                     <p className={`w-24 text-[12px] text-center text-white rounded-md ${priorityColor()}`}>IMPORTANT</p>
+                     <p className={`w-24 text-[12px] text-center text-white rounded-md ${priorityColor()}`}>
+                        IMPORTANT
+                     </p>
                   ) : (
                      <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>
                         {task.priority}

@@ -71,7 +71,7 @@ export const updateTaskStatus = async (id, status) => {
    }
 };
 
-export const getAllCollaboratorUsers = async (id) => {
+export const getAllAssignedUsers = async (id) => {
    try {
       const response = await api.get(`/${id}/users`);
       console.log(response.data);
@@ -82,9 +82,9 @@ export const getAllCollaboratorUsers = async (id) => {
    }
 };
 
-export const addUserToCollaborators = async (id, userId) => {
+export const addUserToAssignees = async (id, user) => {
    try {
-      const response = await api.post(`/${id}/users`, { userId });
+      const response = await api.post(`/${id}/users`, user);
       console.log(response.data);
       return response.data;
    } catch (error) {
@@ -93,7 +93,7 @@ export const addUserToCollaborators = async (id, userId) => {
    }
 };
 
-export const removeUserFromCollaborators = async (id, removedUserId) => {
+export const removeUserFromAssginees = async (id, removedUserId) => {
    try {
       const response = await api.delete(`/${id}/users`, { data: { removedUserId } });
       console.log(response.data);

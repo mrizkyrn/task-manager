@@ -17,13 +17,22 @@ const UserInfo = ({ user, onClose, onRemove }) => {
             alt="avatar"
          />
          <p className="mt-3 text-lg md:text-xl font-semibold text-gray-200">{user.username}</p>
+         <p className="mt-1 text-sm md:text-base text-gray-400">{user.role}</p>
 
-         <MainButton
-            className="w-full text-sm sm:text-base flex justify-center items-center mt-12 !bg-red-800"
-            onClick={() => setIsAlertOpen(true)}
-         >
-            {currentUser._id === user._id ? 'Leave the task' : 'Remove user'}
-         </MainButton>
+         {/* Show remove button only if the user is not the current user */}
+         {currentUser._id !== user._id ? (
+            <MainButton
+               className="w-full text-sm sm:text-base flex justify-center items-center mt-12 !bg-red-800"
+               onClick={() => setIsAlertOpen(true)}
+            >
+               Remove user
+            </MainButton>
+         ) : (
+            <div className="mt-10 text-sm text-center leading-7 text-gray-400">
+               <p>This is you, yes YOU!</p>
+               <p>Please love yourself! :)</p>
+            </div>
+         )}
 
          {/* Show alert when remove user */}
          {isAlertOpen && (
@@ -43,6 +52,7 @@ UserInfo.propTypes = {
       _id: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
       avatar: PropTypes.string.isRequired,
+      role: PropTypes.string,
    }).isRequired,
    onClose: PropTypes.func.isRequired,
    onRemove: PropTypes.func.isRequired,

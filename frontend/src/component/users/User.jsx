@@ -30,6 +30,7 @@ User.propTypes = {
       _id: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
       avatar: PropTypes.string.isRequired,
+      role: PropTypes.string,
    }).isRequired,
    onRemove: PropTypes.func.isRequired,
 };

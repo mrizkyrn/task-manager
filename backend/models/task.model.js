@@ -25,6 +25,10 @@ const taskSchema = new mongoose.Schema(
          enum: ['not-started', 'in-progress', 'completed'],
          default: 'not-started',
       },
+      isImportant: {
+         type: Boolean,
+         default: false,
+      },
       dueDate: {
          type: Date,
       },
@@ -33,10 +37,17 @@ const taskSchema = new mongoose.Schema(
          ref: 'User',
          required: true,
       },
-      collaborators: [
+      assignees: [
          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            user: {
+               type: mongoose.Schema.Types.ObjectId,
+               ref: 'User',
+            },
+            role: {
+               type: String,
+               enum: ['admin', 'collaborator', 'viewer'],
+               default: 'collaborator',
+            },
          },
       ],
    },

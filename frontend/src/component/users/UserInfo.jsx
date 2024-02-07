@@ -8,7 +8,7 @@ import Modal from '../helpers/Modal';
 const UserInfo = ({ user, onClose, onRemove }) => {
    const { currentUser } = useSelector((state) => state.user);
    const [isAlertOpen, setIsAlertOpen] = useState(false);
-
+   
    return (
       <Modal isOpen={true} onClose={onClose}>
          <img

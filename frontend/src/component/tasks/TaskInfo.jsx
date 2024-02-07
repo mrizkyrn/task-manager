@@ -4,9 +4,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import { addUserToAssignees, removeUserFromAssginees, getAllAssignedUsers } from '../../api/task';
 import { PlusIcon } from '../icons/Icons';
 import User from '../users/User';
+import AddAssignees from '../users/AddAssignees';
 
 const TaskInfo = ({ task }) => {
    const [assignedUsers, setAssignedUsers] = useState([]);
+   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
 
    useEffect(() => {
       const getAssignedUsers = async () => {
@@ -17,8 +19,8 @@ const TaskInfo = ({ task }) => {
       if (task.assignees.length > 0) getAssignedUsers();
    }, [task._id, task.assignees]);
 
-   const handleAddUser = async () => {
-      const data = await addUserToAssignees(task._id, { id: '65be8664cd47fd11217162a1', role: 'viewer' });
+   const handleAddUser = async (userId) => {
+      const data = await addUserToAssignees(task._id, { id: userId, role: 'viewer' });
 
       if (!data.success) {
          toast.error(data.message, {
@@ -77,7 +79,7 @@ const TaskInfo = ({ task }) => {
                {assignedUsers &&
                   assignedUsers.map((user) => <User key={user._id} user={user} onRemove={handleRemoveUser} />)}
                <button
-                  onClick={handleAddUser}
+                  onClick={() => setIsAddUserModalOpen(true)}
                   className="flex justify-center items-center w-12 h-12 bg-gray-700 rounded-full cursor-pointer hover:bg-gray-600"
                >
                   <PlusIcon className="w-6 h-6 text-light" />
@@ -97,6 +99,13 @@ const TaskInfo = ({ task }) => {
 
          {/* Toastify */}
          <ToastContainer />
+
+         {/* Add User Modal */}
+         <AddAssignees
+            isOpen={isAddUserModalOpen}
+            onClose={() => setIsAddUserModalOpen(false)}
+            onAddUser={handleAddUser}
+         />
       </div>
    );
 };

@@ -186,7 +186,7 @@ const addAssignee = async (req, res, next) => {
       res.status(200).send({
          success: true,
          message: `${user.username} added to task`,
-         data: { _id: user._id, username: user.username, avatar: user.avatar },
+         data: { _id: user._id, username: user.username, avatar: user.avatar, role },
       });
    } catch (error) {
       next(error);

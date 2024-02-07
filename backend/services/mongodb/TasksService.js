@@ -115,7 +115,9 @@ class TasksService {
    static async verifyAddAssignee(taskId, userId) {
       const task = await this._findTaskById(taskId);
 
-      if (task.assignees.indexOf(userId) !== -1) throw new InvariantError('User already assigned to task');
+      if (task.assignees.find((assignee) => assignee.user.toString() === userId.toString())) {
+         throw new InvariantError('User is already assigned to this task');
+      }
    }
 }
 

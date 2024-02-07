@@ -2,6 +2,18 @@ const Task = require('../models/task.model.js');
 const AuthorizationError = require('../exceptions/AuthorizationError');
 const UsersService = require('../services/mongodb/UsersService');
 
+const searchUserByUsername = async (req, res, next) => {
+   try {
+      const { username } = req.query;
+
+      const data = await UsersService.searchUserByUsername(username);
+
+      res.status(200).send({ success: true, message: 'User found', data });
+   } catch (error) {
+      next(error);
+   }
+};
+
 const changeUsername = async (req, res, next) => {
    try {
       const { id } = req.params;
@@ -79,6 +91,7 @@ const deleteUser = async (req, res, next) => {
 };
 
 module.exports = {
+   searchUserByUsername,
    changeUsername,
    changeAvatar,
    editUser,

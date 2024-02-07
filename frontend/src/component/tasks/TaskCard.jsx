@@ -33,7 +33,7 @@ const TaskCard = ({ task, setTasks }) => {
       const data = await updateTaskStatus(id, status);
 
       if (!data.success) {
-         toast.error('Something went wrong. Please try again later.', {
+         toast.error(data.message, {
             theme: 'colored',
             position: 'top-left',
          });

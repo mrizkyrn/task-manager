@@ -15,6 +15,14 @@ class UsersService {
       if (!result) throw new InvariantError('Failed to create user');
    }
 
+   static async searchUserByUsername(username) {
+      // return username and avatar only
+      const result = await User.find({ username: { $regex: username, $options: 'i' } }, 'username avatar');
+
+      if (!result) throw new NotFoundError('User not found');
+      return result;
+   }
+
    static async getUserByUsername(username) {
       const result = await User.findOne({ username });
 

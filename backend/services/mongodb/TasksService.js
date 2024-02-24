@@ -97,6 +97,25 @@ class TasksService {
       await task.save();
    }
 
+   static async getUserTaskRole(taskId, userId) {
+      const task = await this._findTaskById(taskId);
+
+      const assignedUser = task.assignees.find((assignee) => assignee.user.toString() === userId.toString());
+      if (!assignedUser) throw new NotFoundError('You are not assigned to this task');
+
+      return assignedUser.role;
+   }
+
+   static async changeAssigneeRole(taskId, userId, role) {
+      const task = await this._findTaskById(taskId);
+
+      const assignedUser = task.assignees.find((assignee) => assignee.user.toString() === userId.toString());
+      if (!assignedUser) throw new NotFoundError('User not assigned to this task');
+
+      assignedUser.role = role;
+      await task.save();
+   }
+
    static async verifyTaskAdmin(taskId, userId) {
       const role = await this._getUserRole(taskId, userId);
       if (role !== 'admin') throw new AuthorizationError('User not authorized');

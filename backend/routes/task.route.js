@@ -9,6 +9,8 @@ const {
    getAssignees,
    addAssignee,
    removeAssignee,
+   getUserTaskRole,
+   changeAssigneeRole,
 } = require('../controllers/task.controller.js');
 const verifyToken = require('../utils/userVerify.js');
 
@@ -23,5 +25,7 @@ router.patch('/:id', verifyToken, updateTaskStatus);
 router.get('/:id/users', verifyToken, getAssignees);
 router.post('/:id/users', verifyToken, addAssignee);
 router.delete('/:id/users', verifyToken, removeAssignee);
+router.get('/:id/users/role', verifyToken, getUserTaskRole);
+router.patch('/:id/users/role', verifyToken, changeAssigneeRole);
 
 module.exports = router;

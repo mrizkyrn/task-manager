@@ -103,3 +103,25 @@ export const removeUserFromAssginees = async (id, removedUserId) => {
       return error.response.data;
    }
 };
+
+export const getUserTaskRole = async (id) => {
+   try {
+      const response = await api.get(`/${id}/users/role`);
+      console.log(response.data);
+      return response.data;
+   } catch (error) {
+      console.log(error.response.data);
+      return error.response.data;
+   }
+}
+
+export const changeAssigneeRole = async (id, userId, role) => {
+   try {
+      const response = await api.patch(`/${id}/users/role`, { userId, role });
+      console.log(response.data);
+      return response.data;
+   } catch (error) {
+      console.log(error.response.data);
+      return error.response.data;
+   }
+}

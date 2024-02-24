@@ -1,22 +1,34 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { addUserToAssignees, removeUserFromAssginees, getAllAssignedUsers } from '../../api/task';
+import {
+   addUserToAssignees,
+   removeUserFromAssginees,
+   getAllAssignedUsers,
+   getUserTaskRole,
+   changeAssigneeRole,
+} from '../../api/task';
 import { PlusIcon } from '../icons/Icons';
-import User from '../users/User';
+import TaskUserAvatar from '../users/TaskUserAvatar';
 import AddAssignees from '../users/AddAssignees';
 
 const TaskInfo = ({ task }) => {
    const [assignedUsers, setAssignedUsers] = useState([]);
    const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+   const [currentUserRole, setCurrentUserRole] = useState('');
 
    useEffect(() => {
-      const getAssignedUsers = async () => {
-         const data = await getAllAssignedUsers(task._id);
-         setAssignedUsers(data.data);
+      const fetchTaskData = async () => {
+         const [taskRoleData, assignedUsersData] = await Promise.all([
+            getUserTaskRole(task._id),
+            task.assignees.length > 0 ? getAllAssignedUsers(task._id) : Promise.resolve({ data: [] }),
+         ]);
+
+         setCurrentUserRole(taskRoleData.data.role);
+         setAssignedUsers(assignedUsersData.data);
       };
 
-      if (task.assignees.length > 0) getAssignedUsers();
+      fetchTaskData();
    }, [task._id, task.assignees]);
 
    const handleAddUser = async (userId) => {
@@ -53,6 +65,23 @@ const TaskInfo = ({ task }) => {
       });
    };
 
+   const handleChangeRole = async (userId, role) => {
+      const data = await changeAssigneeRole(task._id, userId, role);
+
+      if (!data.success) {
+         toast.error(data.message, {
+            theme: 'colored',
+            position: 'top-left',
+         });
+         return;
+      }
+
+      setAssignedUsers((prev) => prev.map((user) => (user._id === userId ? { ...user, role } : user)));
+      toast.success(data.message, {
+         theme: 'colored',
+      });
+   };
+
    const formatDate = (date) => {
       const d = new Date(date);
       const year = d.getFullYear();
@@ -77,7 +106,15 @@ const TaskInfo = ({ task }) => {
             <p className="font-semibold text-gray-300">Assignees</p>
             <div className="flex flex-wrap items-center gap-3 mt-3">
                {assignedUsers &&
-                  assignedUsers.map((user) => <User key={user._id} user={user} onRemove={handleRemoveUser} />)}
+                  assignedUsers.map((user) => (
+                     <TaskUserAvatar
+                        key={user._id}
+                        user={user}
+                        currentUserRole={currentUserRole}
+                        onRemove={handleRemoveUser}
+                        onChangeRole={handleChangeRole}
+                     />
+                  ))}
                <button
                   onClick={() => setIsAddUserModalOpen(true)}
                   className="flex justify-center items-center w-12 h-12 bg-gray-700 rounded-full cursor-pointer hover:bg-gray-600"

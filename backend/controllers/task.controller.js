@@ -217,6 +217,38 @@ const removeAssignee = async (req, res, next) => {
    }
 };
 
+const getUserTaskRole = async (req, res, next) => {
+   const { id: userId } = req.user;
+   const { id: taskId } = req.params;
+
+   try {
+      // get user's role in the task
+      const role = await TasksService.getUserTaskRole(taskId, userId);
+
+      res.status(200).send({ success: true, message: 'User role fetched successfully', data: { role } });
+   } catch (error) {
+      next(error);
+   }
+};
+
+const changeAssigneeRole = async (req, res, next) => {
+   const { id: userId } = req.user;
+   const { id: taskId } = req.params;
+   const { userId: assigneeId, role } = req.body;
+
+   try {
+      // check if user is authorized to change assignee role
+      await TasksService.verifyTaskAdmin(taskId, userId);
+
+      // change assignee role
+      await TasksService.changeAssigneeRole(taskId, assigneeId, role);
+
+      res.status(200).send({ success: true, message: 'Assignee role updated successfully' });
+   } catch (error) {
+      next(error);
+   }
+};
+
 module.exports = {
    createTask,
    getTasks,
@@ -227,4 +259,6 @@ module.exports = {
    getAssignees,
    addAssignee,
    removeAssignee,
+   getUserTaskRole,
+   changeAssigneeRole,
 };

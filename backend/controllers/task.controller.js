@@ -166,21 +166,25 @@ const getAssignees = async (req, res, next) => {
 };
 
 const addAssignee = async (req, res, next) => {
+   const { id: userId } = req.user;
    const { id: taskId } = req.params;
-   const { id: userId, role } = req.body;
+   const { id: assigneeId, role } = req.body;
 
    try {
       // check if user exists
-      await UsersService.verifyUser(userId);
+      await UsersService.verifyUser(assigneeId);
+
+      // check if user is authorized to add assignee
+      await TasksService.verifyTaskAdmin(taskId, userId);
 
       // check if user is already added
-      await TasksService.verifyAddAssignee(taskId, userId);
+      await TasksService.verifyAddAssignee(taskId, assigneeId);
 
       // add user to assignees
-      await TasksService.addAssignee(taskId, userId, role);
+      await TasksService.addAssignee(taskId, assigneeId, role);
 
       // add task to user's tasks array
-      const user = await UsersService.addTaskToUser(userId, taskId);
+      const user = await UsersService.addTaskToUser(assigneeId, taskId);
 
       // send success response
       res.status(200).send({
@@ -196,20 +200,20 @@ const addAssignee = async (req, res, next) => {
 const removeAssignee = async (req, res, next) => {
    const { id: userId } = req.user;
    const { id: taskId } = req.params;
-   const { removedUserId } = req.body;
+   const { assigneeId } = req.body;
 
    try {
       // check if user exists and get username
-      const user = await UsersService.getUserById(removedUserId);
+      const user = await UsersService.getUserById(assigneeId);
 
       // check if user is authorized to remove user from task
       await TasksService.verifyTaskAdmin(taskId, userId);
 
       // Remove user from task
-      await TasksService.removeAssignee(taskId, removedUserId);
+      await TasksService.removeAssignee(taskId, assigneeId);
 
       // Remove task from user's tasks array
-      await UsersService.removeTaskFromUser(removedUserId, taskId);
+      await UsersService.removeTaskFromUser(assigneeId, taskId);
 
       res.status(200).send({ success: true, message: `${user.username} removed from task` });
    } catch (error) {

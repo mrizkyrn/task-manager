@@ -82,9 +82,9 @@ export const getAllAssignedUsers = async (id) => {
    }
 };
 
-export const addUserToAssignees = async (id, user) => {
+export const addUserToAssignees = async (id, assignee) => {
    try {
-      const response = await api.post(`/${id}/users`, user);
+      const response = await api.post(`/${id}/users`, assignee);
       console.log(response.data);
       return response.data;
    } catch (error) {
@@ -93,9 +93,9 @@ export const addUserToAssignees = async (id, user) => {
    }
 };
 
-export const removeUserFromAssginees = async (id, removedUserId) => {
+export const removeUserFromAssginees = async (id, assigneeId) => {
    try {
-      const response = await api.delete(`/${id}/users`, { data: { removedUserId } });
+      const response = await api.delete(`/${id}/users`, { data: { assigneeId } });
       console.log(response.data);
       return response.data;
    } catch (error) {

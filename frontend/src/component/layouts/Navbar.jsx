@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signoutStart, signoutSuccess, signoutFailure } from '../../redux/user/userSlice';
 import { signout } from '../../api/auth';
-import { GroupTasksIcon, HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from '../icons/Icons';
+import { HomeIcon, LogOutIcon, ProjectIcon, TaskIcon } from '../icons/Icons';
 import DialogAlert from '../helpers/DialogAlert';
 import UserProfile from '../users/UserProfile';
 
@@ -20,18 +20,8 @@ const NavbarItems = () => [
    },
    {
       name: 'Important',
-      icon: <TaskIcon className="w-5 h-5" />,
-      path: '/important',
-   },
-   {
-      name: 'Group Tasks',
-      icon: <GroupTasksIcon className="w-5 h-5" />,
-      path: '/group-tasks',
-   },
-   {
-      name: 'Projects',
       icon: <ProjectIcon className="w-5 h-5" />,
-      path: '/projects',
+      path: '/important',
    },
 ];
 

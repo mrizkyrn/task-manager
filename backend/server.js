@@ -9,6 +9,7 @@ const ClientError = require('./exceptions/ClientError');
 const userRoute = require('./routes/user.route.js');
 const authRoute = require('./routes/auth.route.js');
 const taskRoute = require('./routes/task.route.js');
+const bugRoute = require('./routes/bug.route.js');
 
 mongoose
    .connect(process.env.MONGO_URL)
@@ -33,18 +34,7 @@ app.listen(3000, () => {
 app.use('/api/users', userRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/tasks', taskRoute);
-
-// Middleware
-// app.use((error, res) => {
-//    const statusCode = error.statusCode || 500;
-//    const message = error.message || 'Internal server error';
-
-//    res.status(statusCode).json({
-//       success: false,
-//       statusCode,
-//       message,
-//    });
-// });
+app.use('/api/bugs', bugRoute);
 
 // eslint-disable-next-line no-unused-vars
 app.use((error, req, res, next) => {

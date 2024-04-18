@@ -33,7 +33,6 @@ const CreateTask = () => {
       
       // convert the date to ISO format
       if (form.dueDate) form.dueDate = new Date(form.dueDate).toISOString();
-      console.log(form);
       
       const data = await createTask({ ...form, notes });
 
@@ -71,6 +70,7 @@ const CreateTask = () => {
    const onSubmitFailure = (message) => {
       toast.error(message, {
          theme: 'colored',
+         position: 'top-left',
       });
    };
 

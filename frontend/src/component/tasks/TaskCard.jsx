@@ -2,11 +2,12 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import { deleteTask, updateTaskStatus } from '../../api/task';
+import { changeTaskImportance, deleteTask, updateTaskStatus } from '../../api/task';
 import { ISOtoReadable, ISOtoTime, overdueISOCheck } from '../../utils/date';
 import MenuButton from '../buttons/MenuButton';
 import DialogAlert from '../helpers/DialogAlert';
 import TaskStatus from './TaskStatus';
+import ImportantTaskButton from '../buttons/ImportantTaskButton';
 
 const TaskCard = ({ task, setTasks }) => {
    const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -16,8 +17,6 @@ const TaskCard = ({ task, setTasks }) => {
 
    const priorityColor = () => {
       switch (task.priority) {
-         case 'important':
-            return 'bg-blue-700';
          case 'high':
             return 'bg-red-700';
          case 'medium':
@@ -53,8 +52,9 @@ const TaskCard = ({ task, setTasks }) => {
       const data = await deleteTask(id);
 
       if (!data.success) {
-         toast.error('Something went wrong. Please try again later.', {
+         toast.error(data.message, {
             theme: 'colored',
+            position: 'top-left',
          });
          return;
       }
@@ -67,6 +67,20 @@ const TaskCard = ({ task, setTasks }) => {
 
    const handleView = (task) => {
       navigate(`/${currentLocation}/${task._id}`, { state: { task } });
+   };
+
+   const handleChangeImportance = async () => {
+      const data = await changeTaskImportance(task._id, !task.isImportant);
+
+      if (!data.success) {
+         toast.error(data.message, {
+            theme: 'colored',
+            position: 'top-left',
+         });
+         return;
+      }
+
+      setTasks((prev) => prev.map((t) => (t._id === task._id ? { ...t, isImportant: !t.isImportant } : t)));
    };
 
    return (
@@ -87,15 +101,7 @@ const TaskCard = ({ task, setTasks }) => {
                <h1 className="w-10/12 text-xl md:text-2xl line-clamp-1 font-bold text-gray-200">{task.title}</h1>
                <p className="text-sm md:text-base leading-6 line-clamp-1 text-gray-300">{task.description}</p>
                <div className="flex justify-between items-center">
-                  {task.priority === 'important' ? (
-                     <p className={`w-24 text-[12px] text-center text-white rounded-md ${priorityColor()}`}>
-                        IMPORTANT
-                     </p>
-                  ) : (
-                     <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>
-                        {task.priority}
-                     </p>
-                  )}
+                  <p className={`w-20 text-sm text-center text-white rounded-md ${priorityColor()}`}>{task.priority}</p>
                   {task.dueDate && (
                      <p
                         className={`text-xs text-right
@@ -114,7 +120,8 @@ const TaskCard = ({ task, setTasks }) => {
                   )}
                </div>
             </div>
-            <div className="absolute top-4 right-3 text-sm sm:text-base basis-12 sm:basis-44 flex flex-col justify-between items-end">
+            <div className="absolute top-4 right-3 basis-12 sm:basis-44 flex gap-3 justify-between items-center">
+               <ImportantTaskButton isImportant={task.isImportant} onImportantChange={handleChangeImportance} />
                <MenuButton onEdit={() => handleEdit(task)} onDelete={() => setIsAlertOpen(true)} />
             </div>
          </div>
@@ -142,6 +149,7 @@ TaskCard.propTypes = {
       priority: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       createdAt: PropTypes.string.isRequired,
+      isImportant: PropTypes.bool.isRequired,
       status: PropTypes.string,
       dueDate: PropTypes.string,
    }).isRequired,

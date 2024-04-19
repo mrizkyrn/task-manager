@@ -29,7 +29,7 @@ const Tasks = () => {
             {loading ? (
                tasks.map((task) => <TaskCardSkeleton key={task._id} />)
             ) : tasks.length > 0 ? (
-               tasks.filter((task) => task.priority === 'important').map((task) => <TaskCard key={task._id} task={task} setTasks={setTasks} />)
+               tasks.filter((task) => task.isImportant).map((task) => <TaskCard key={task._id} task={task} setTasks={setTasks} />)
             ) : (
                <p className="text-sm sm:text-base text-gray-400 text-center mt-10">
                   You don&apos;t have any important tasks.

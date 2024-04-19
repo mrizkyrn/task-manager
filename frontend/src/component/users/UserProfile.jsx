@@ -86,6 +86,7 @@ const UserProfile = ({ onClose, onAlertLogout, onLogout }) => {
       if (!data.success) {
          toast.error(data.message, {
             theme: 'colored',
+            position: 'top-left',
          });
          return;
       }

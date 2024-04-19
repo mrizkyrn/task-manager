@@ -21,13 +21,14 @@ class TasksService {
       return assignedUser.role;
    }
 
-   static async createTask({ title, description, notes, priority, status, dueDate, creator, assignees }) {
+   static async createTask({ title, description, notes, priority, isImportant, status, dueDate, creator, assignees }) {
       const task = new Task({
          title,
          description,
          notes,
          priority,
          status,
+         isImportant,
          dueDate,
          creator,
          assignees,
@@ -59,8 +60,8 @@ class TasksService {
       return task;
    }
 
-   static async updateTask(id, { title, description, notes, priority, status, dueDate }) {
-      const result = await Task.updateOne({ _id: id }, { title, description, notes, priority, status, dueDate });
+   static async updateTask(id, { title, description, notes, priority, status, dueDate, isImportant }) {
+      const result = await Task.updateOne({ _id: id }, { title, description, notes, priority, status, dueDate, isImportant });
       if (!result.modifiedCount) throw new InvariantError('Failed to update task');
    }
 
@@ -113,6 +114,13 @@ class TasksService {
       if (!assignedUser) throw new NotFoundError('User not assigned to this task');
 
       assignedUser.role = role;
+      await task.save();
+   }
+
+   static async changeTaskImportance(taskId, importance) {
+      const task = await this._findTaskById(taskId);
+
+      task.isImportant = importance;
       await task.save();
    }
 

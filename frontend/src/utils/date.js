@@ -16,6 +16,13 @@ export const ISOtoDateTime = (ISOdate) => {
    return date.toLocaleDateString('en-US', options);
 };
 
+export const ISOtoLocalDate = (ISOdate) => {
+   if (!ISOdate) return '';
+   const newDate = new Date(ISOdate);
+   const offset = newDate.getTimezoneOffset() * 60000;
+   return new Date(newDate - offset).toISOString().slice(0, -1);
+};
+
 export const overdueISOCheck = (ISOdate) => {
    const date = new Date(ISOdate);
    return date < Date.now();

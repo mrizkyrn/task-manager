@@ -3,7 +3,7 @@ const UsersService = require('../services/mongodb/UsersService.js');
 
 const createTask = async (req, res, next) => {
    const { id: userId } = req.user;
-   const { title, description, notes, priority, status, dueDate } = req.body;
+   const { title, description, notes, priority, status, dueDate, isImportant } = req.body;
 
    try {
       // create the task
@@ -14,6 +14,7 @@ const createTask = async (req, res, next) => {
          priority,
          status,
          dueDate,
+         isImportant,
          creator: userId,
          assignees: [{ user: userId, role: 'admin' }],
       });
@@ -73,7 +74,7 @@ const getTaskById = async (req, res, next) => {
 const updateTask = async (req, res, next) => {
    const { id: userId } = req.user;
    const { id: taskId } = req.params;
-   const { title, description, notes, priority, status, dueDate } = req.body;
+   const { title, description, notes, priority, status, dueDate, isImportant } = req.body;
 
    try {
       // check if user is authorized to update task
@@ -87,6 +88,7 @@ const updateTask = async (req, res, next) => {
          priority,
          status,
          dueDate,
+         isImportant,
       });
 
       // send success response
@@ -253,6 +255,24 @@ const changeAssigneeRole = async (req, res, next) => {
    }
 };
 
+const changeTaskImportance = async (req, res, next) => {
+   const { id: userId } = req.user;
+   const { id: taskId } = req.params;
+   const { importance } = req.body;
+
+   try {
+      // check if user is authorized to change task importance
+      await TasksService.verifyTaskCollaborator(taskId, userId);
+
+      // change task importance
+      await TasksService.changeTaskImportance(taskId, importance);
+
+      res.status(200).send({ success: true, message: 'Task importance updated successfully' });
+   } catch (error) {
+      next(error);
+   }
+};
+
 module.exports = {
    createTask,
    getTasks,
@@ -265,4 +285,5 @@ module.exports = {
    removeAssignee,
    getUserTaskRole,
    changeAssigneeRole,
+   changeTaskImportance,
 };

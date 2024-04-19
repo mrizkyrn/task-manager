@@ -56,12 +56,17 @@ const SignUp = () => {
       });
 
       // show the success toast
-      toast.success('Sign up successful!, Please sign in.');
+      toast.success('Sign up successful!, Please sign in.', {
+         theme: 'colored',
+      });
    };
 
    const onSignupFailure = (message) => {
       dispatch(signupFailure(message));
-      toast.error(message);
+      toast.error(message, {
+         theme: 'colored',
+         position: 'top-left',
+      });
    };
 
    const validateForm = () => {

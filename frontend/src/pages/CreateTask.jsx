@@ -14,6 +14,7 @@ const initialForm = {
    priority: 'medium',
    status: 'not-started',
    dueDate: '',
+   isImportant: false,
 };
 
 const CreateTask = () => {
@@ -143,7 +144,6 @@ const CreateTask = () => {
                   onChange={(e) => setForm({ ...form, priority: e.target.value })}
                   value={form.priority}
                >
-                  <option value="important">IMPORTANT</option>
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
                   <option value="low">Low</option>
@@ -181,6 +181,20 @@ const CreateTask = () => {
                   onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
                   value={form.dueDate}
                />
+            </div>
+
+            {/* Importance */}
+            <div className="flex items-center gap-3 mt-4">
+               <input
+                  type="checkbox"
+                  id="isImportant"
+                  className="w-5 h-5 rounded-md"
+                  onChange={(e) => setForm({ ...form, isImportant: e.target.checked })}
+                  checked={form.isImportant}
+               />
+               <label htmlFor="isImportant" className="text-gray-400">
+                  Mark as Important Task
+               </label>
             </div>
 
             {/* Submit */}

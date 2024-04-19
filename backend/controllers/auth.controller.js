@@ -23,7 +23,6 @@ const signup = async (req, res, next) => {
 const signin = async (req, res, next) => {
    try {
       const { username, password } = req.body;
-
       const user = await UsersService.getUserByUsername(username);
 
       // check if password is correct

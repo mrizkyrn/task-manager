@@ -7,13 +7,7 @@ import Container from '../component/layouts/Container';
 import MainButton from '../component/buttons/MainButton';
 import NoteInput from '../component/helpers/NoteInput';
 import HeaderTitle from '../component/layouts/HeaderTitle';
-
-const ISOtoLocalDate = (date) => {
-   if (!date) return '';
-   const newDate = new Date(date);
-   const offset = newDate.getTimezoneOffset() * 60000;
-   return new Date(newDate - offset).toISOString().slice(0, -1);
-};
+import { ISOtoLocalDate } from '../utils/date';
 
 const EditTask = () => {
    const location = useLocation();
@@ -26,6 +20,7 @@ const EditTask = () => {
       priority: task.priority,
       status: task.status,
       dueDate: ISOtoLocalDate(task.dueDate),
+      isImportant: task.isImportant,
    };
 
    const [form, setForm] = useState(initialForm);
@@ -55,7 +50,10 @@ const EditTask = () => {
    const validateForm = () => {
       // check if the title is empty
       if (!form.title) {
-         toast.error('Title cannot be empty.');
+         toast.error('Title cannot be empty.', {
+            theme: 'colored',
+            position: 'top-left',
+         });
          return false;
       }
 
@@ -75,6 +73,7 @@ const EditTask = () => {
    const onSubmitFailure = (message) => {
       toast.error(message, {
          theme: 'colored',
+         position: 'top-left',
       });
    };
 
@@ -185,6 +184,20 @@ const EditTask = () => {
                   onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
                   value={form.dueDate}
                />
+            </div>
+
+            {/* Importance */}
+            <div className="flex items-center gap-3 mt-4">
+               <input
+                  type="checkbox"
+                  id="isImportant"
+                  className="w-5 h-5 rounded-md"
+                  onChange={(e) => setForm({ ...form, isImportant: e.target.checked })}
+                  checked={form.isImportant}
+               />
+               <label htmlFor="isImportant" className="text-gray-400">
+                  Mark as Important Task
+               </label>
             </div>
 
             {/* Submit */}

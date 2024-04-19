@@ -125,3 +125,14 @@ export const changeAssigneeRole = async (id, userId, role) => {
       return error.response.data;
    }
 }
+
+export const changeTaskImportance = async (id, importance) => {
+   try {
+      const response = await api.patch(`/${id}/importance`, { importance });
+      console.log(response.data);
+      return response.data;
+   } catch (error) {
+      console.log(error.response.data);
+      return error.response.data;
+   }
+}

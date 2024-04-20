@@ -4,7 +4,7 @@ import TaskCard from '../component/tasks/TaskCard';
 import TaskCardSkeleton from '../component/skeletons/taskCardSkeleton';
 import { getUserTasks } from '../api/task';
 
-const Tasks = () => {
+const ImportantTasks = () => {
    const [tasks, setTasks] = useState([]);
    const [loading, setLoading] = useState(true);
 
@@ -19,6 +19,23 @@ const Tasks = () => {
       getTasks();
    }, []);
 
+   const renderTasks = () => {
+      if (loading) {
+         return tasks.map((task) => <TaskCardSkeleton key={task._id} />);
+      } else {
+         const importantTasks = tasks.filter((task) => task.isImportant);
+         if (importantTasks.length > 0) {
+            return importantTasks.map((task) => <TaskCard key={task._id} task={task} setTasks={setTasks}/>);
+         } else {
+            return (
+               <p className="text-sm sm:text-base text-gray-400 text-center mt-10">
+                  You don&apos;t have any important tasks.
+               </p>
+            );
+         }
+      }
+   };
+
    return (
       <Container>
          <div className="flex justify-between items-center">
@@ -26,18 +43,10 @@ const Tasks = () => {
          </div>
 
          <div className="flex flex-col gap-7 mt-10">
-            {loading ? (
-               tasks.map((task) => <TaskCardSkeleton key={task._id} />)
-            ) : tasks.length > 0 ? (
-               tasks.filter((task) => task.isImportant).map((task) => <TaskCard key={task._id} task={task} setTasks={setTasks} />)
-            ) : (
-               <p className="text-sm sm:text-base text-gray-400 text-center mt-10">
-                  You don&apos;t have any important tasks.
-               </p>
-            )}
+            {renderTasks()}
          </div>
       </Container>
    );
 };
 
-export default Tasks;
+export default ImportantTasks;

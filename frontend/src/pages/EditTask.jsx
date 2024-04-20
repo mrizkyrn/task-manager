@@ -146,7 +146,6 @@ const EditTask = () => {
                   onChange={(e) => setForm({ ...form, priority: e.target.value })}
                   value={form.priority}
                >
-                  <option value="important">IMPORTANT</option>
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
                   <option value="low">Low</option>

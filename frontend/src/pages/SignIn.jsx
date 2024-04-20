@@ -12,6 +12,11 @@ const SignIn = () => {
    const dispatch = useDispatch();
 
    useEffect(() => {
+      dispatch(signinStart());
+      dispatch(signinFailure(null));
+   }, [dispatch]);
+
+   useEffect(() => {
       if (currentUser) {
          navigate('/');
       }

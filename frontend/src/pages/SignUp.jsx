@@ -17,6 +17,11 @@ const SignUp = () => {
    const dispatch = useDispatch();
 
    useEffect(() => {
+      dispatch(signupStart());
+      dispatch(signupFailure(null));
+   }, [dispatch]);
+
+   useEffect(() => {
       if (currentUser) {
          navigate('/');
       }

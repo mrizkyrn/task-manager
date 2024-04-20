@@ -29,7 +29,7 @@ const DetailTask = () => {
                   </>
                )}
 
-               <p className="text-[#a7acb5] mt-2">Priority: {task.priority}</p>
+               <p className="text-[#a7acb5] mt-10">Priority: {task.priority}</p>
                <p className="text-[#a7acb5] mt-2">Status: {task.status}</p>
                <p className={`mt-2 ${isOverdue ? 'text-red-700' : 'text-[#a7acb5]'}`}>
                   {isOverdue ? 'Overdue: ' : 'Due: '}

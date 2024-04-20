@@ -112,7 +112,7 @@ const TaskUserDetail = ({ user, currentUserRole, onClose, onRemove, onChangeRole
          {/* Show alert when remove user */}
          {isAlertOpen && (
             <DialogAlert
-               message="Are you sure you want to delete your account?"
+               message="Are you sure you want to remove this user from the task?"
                actionText="Remove"
                onCancel={() => setIsAlertOpen(false)}
                onAction={() => onRemove(user._id)}

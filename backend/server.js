@@ -36,6 +36,10 @@ app.use('/api/auth', authRoute);
 app.use('/api/tasks', taskRoute);
 app.use('/api/bugs', bugRoute);
 
+app.get('/', (req, res) => {
+   res.send('Task Manager API');
+});
+
 // eslint-disable-next-line no-unused-vars
 app.use((error, req, res, next) => {
    if (error instanceof ClientError) {

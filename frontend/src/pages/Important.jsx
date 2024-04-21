@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Container from '../component/layouts/Container';
 import TaskCard from '../component/tasks/TaskCard';
-import TaskCardSkeleton from '../component/skeletons/taskCardSkeleton';
+import TaskCardSkeleton from '../component/skeletons/TaskCardSkeleton';
 import { getUserTasks } from '../api/task';
 
 const ImportantTasks = () => {

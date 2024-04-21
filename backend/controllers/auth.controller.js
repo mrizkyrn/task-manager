@@ -34,7 +34,7 @@ const signin = async (req, res, next) => {
 
       // send user data and token
       const data = { _id: user._id, username: user.username, avatar: user.avatar };
-      res.cookie('access_token', token, { httpOnly: true })
+      res.cookie('access_token', token, { httpOnly: true, sameSite: 'None', secure: true })
          .status(200)
          .send({ success: true, message: 'User signed in successfully', user: data });
    } catch (error) {

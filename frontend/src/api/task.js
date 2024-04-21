@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-   baseURL: 'http://localhost:3000/api/tasks',
+   baseURL: 'https://task-manager-api-v1.vercel.app/api/tasks',
    withCredentials: true,
 });
 
@@ -113,7 +113,7 @@ export const getUserTaskRole = async (id) => {
       console.log(error.response.data);
       return error.response.data;
    }
-}
+};
 
 export const changeAssigneeRole = async (id, userId, role) => {
    try {
@@ -124,7 +124,7 @@ export const changeAssigneeRole = async (id, userId, role) => {
       console.log(error.response.data);
       return error.response.data;
    }
-}
+};
 
 export const changeTaskImportance = async (id, importance) => {
    try {
@@ -135,4 +135,4 @@ export const changeTaskImportance = async (id, importance) => {
       console.log(error.response.data);
       return error.response.data;
    }
-}
+};

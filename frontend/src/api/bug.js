@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-   baseURL: 'http://localhost:3000/api/bugs',
+   baseURL: 'https://task-manager-api-v1.vercel.app/api/bugs',
    withCredentials: true,
 });
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-   baseURL: 'http://localhost:3000/api/users',
+   baseURL: 'https://task-manager-api-v1.vercel.app/api/users',
    withCredentials: true,
 });
 
@@ -14,7 +14,7 @@ export const searchUserByUsername = async (username) => {
       console.log(error.response.data);
       return error.response.data;
    }
-}
+};
 
 export const changeUsername = async (id, username) => {
    try {

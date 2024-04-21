@@ -4,7 +4,7 @@ import { getUserTasks } from '../api/task';
 import { AddIcon } from '../component/icons/Icons';
 import Container from '../component/layouts/Container';
 import TaskCard from '../component/tasks/TaskCard';
-import TaskCardSkeleton from '../component/skeletons/taskCardSkeleton';
+import TaskCardSkeleton from '../component/skeletons/TaskCardSkeleton';
 
 const Tasks = () => {
    const [tasks, setTasks] = useState([]);

@@ -4,12 +4,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const ClientError = require('./exceptions/ClientError');
+const ClientError = require('../exceptions/ClientError.js');
 
-const userRoute = require('./routes/user.route.js');
-const authRoute = require('./routes/auth.route.js');
-const taskRoute = require('./routes/task.route.js');
-const bugRoute = require('./routes/bug.route.js');
+const userRoute = require('../routes/user.route.js');
+const authRoute = require('../routes/auth.route.js');
+const taskRoute = require('../routes/task.route.js');
+const bugRoute = require('../routes/bug.route.js');
 
 mongoose
    .connect(process.env.MONGO_URL)
